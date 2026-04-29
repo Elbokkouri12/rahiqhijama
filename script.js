@@ -19,7 +19,8 @@ window.addEventListener('load', () => {
 function createParticles() {
   const container = document.getElementById('particles');
   if (!container) return;
-  const count = window.innerWidth < 768 ? 12 : 20;
+  // صفر على الهاتف لتوفير الأداء
+  const count = window.innerWidth < 768 ? 0 : 20;
   for (let i = 0; i < count; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
@@ -41,10 +42,18 @@ const navbar = document.getElementById('navbar');
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('navLinks');
 
+// throttle بـ rAF — يمنع تشغيل 60 حسابات/ثانية على الـ scroll
+let scrollTicking = false;
 window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 60);
-  updateActiveNav();
-});
+  if (!scrollTicking) {
+    requestAnimationFrame(() => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+      updateActiveNav();
+      scrollTicking = false;
+    });
+    scrollTicking = true;
+  }
+}, { passive: true });
 
 hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('open');
@@ -572,11 +581,13 @@ document.querySelectorAll('.reel-card').forEach(card => {
   const muteBtn = card.querySelector('.reel-mute-btn');
   const bar = card.querySelector('.reel-bar');
 
-  // Progress bar update
-  video.addEventListener('timeupdate', () => {
-    if (!video.duration) return;
-    bar.style.width = (video.currentTime / video.duration * 100) + '%';
-  });
+  // Progress bar — فقط على الأجهزة غير الهاتف
+  if (window.innerWidth >= 768) {
+    video.addEventListener('timeupdate', () => {
+      if (!video.duration) return;
+      bar.style.width = (video.currentTime / video.duration * 100) + '%';
+    }, { passive: true });
+  }
   video.addEventListener('ended', () => { bar.style.width = '0%'; });
 
   // Mute / unmute toggle
@@ -615,6 +626,13 @@ document.addEventListener('touchstart', function reelUnlock() {
   document.removeEventListener('touchstart', reelUnlock);
 }, { once: true, passive: true });
 
+// إيقاف الريلز عند إخفاء الصفحة (توفير بطارية + CPU)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    document.querySelectorAll('.reel-video, .hero-bg-video').forEach(v => v.pause());
+  }
+}, { passive: true });
+
 // ========== HERO VIDEO — mid-speech loop + sound toggle ==========
 (function () {
   // Video is pre-cut 5s–52s of original (47s total). Phone number removed at source.
@@ -636,11 +654,16 @@ document.addEventListener('touchstart', function reelUnlock() {
     vid.play().catch(() => {});
   });
 
+  // throttle timeupdate — فحص 4 مرات/ثانية بدل 30
+  let lastCheck = 0;
   vid.addEventListener('timeupdate', () => {
+    const now = Date.now();
+    if (now - lastCheck < 250) return;
+    lastCheck = now;
     if (vid.currentTime >= VIDEO_END) {
       vid.currentTime = VIDEO_START;
     }
-  });
+  }, { passive: true });
 
   vid.addEventListener('ended', jumpToStart);
 

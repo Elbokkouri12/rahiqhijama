@@ -42,6 +42,16 @@
 /* ========== RESET & BASE ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* تحسين الأداء على الهاتف */
+@media (max-width: 768px) {
+  .section-padding { contain: layout style; }
+  .reel-card { contain: layout style paint; }
+  .package-card { contain: layout style; }
+  .service-detail-card { contain: layout style; }
+  /* تعطيل smooth scroll على الهواتف الضعيفة */
+  html { scroll-behavior: auto; }
+}
+
 html {
   scroll-behavior: smooth;
   font-size: 16px;
@@ -2208,9 +2218,24 @@ input, textarea, select { font-family: var(--font-main); }
   .section-header { margin-bottom: 36px; }
   .container { padding: 0 18px; }
 
+  /* ══ أداء الهاتف: إزالة backdrop-filter (أثقل عملية CSS) ══ */
+  .navbar,
+  .navbar.scrolled,
+  .hero-badge,
+  .hero-stats,
+  .btn-secondary,
+  .hero-sound-btn,
+  .booking-wrapper { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+
+  /* ══ إخفاء العناصر الزخرفية المتحركة (توفير CPU/GPU) ══ */
+  .floating-cup, .floating-leaf { display: none !important; }
+  .particles-bg { display: none !important; }
+  .hero-bg-pattern { display: none !important; }
+  .hero-scroll-indicator { display: none !important; }
+
   /* ── Navbar ── */
-  .navbar { background: rgba(14, 42, 22, 0.97); }
-  .navbar.scrolled { background: rgba(10, 28, 16, 0.99); }
+  .navbar { background: rgba(14, 42, 22, 0.98); }
+  .navbar.scrolled { background: rgba(10, 28, 16, 1); }
   .nav-container {
     position: relative;
     display: flex;

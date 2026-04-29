@@ -2204,7 +2204,8 @@ input, textarea, select { font-family: var(--font-main); }
 ════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   :root { font-size: 15px; }
-  .section-padding { padding: 56px 0; }
+  .section-padding { padding: 48px 0; }
+  .section-header { margin-bottom: 36px; }
   .container { padding: 0 18px; }
 
   /* ── Navbar ── */
@@ -2216,13 +2217,23 @@ input, textarea, select { font-family: var(--font-main); }
     justify-content: center;
     align-items: center;
     padding: 0 20px;
-    min-height: 60px;
+    min-height: 62px;
   }
   .nav-logo {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
   }
+  /* اللوجو دائري مع حلقة ذهبية — يظهر واضحاً على الخلفية الخضراء */
+  .logo-img {
+    height: 54px;
+    width: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 2px rgba(201,169,110,0.8), 0 4px 16px rgba(0,0,0,0.45);
+    filter: none;
+  }
+  .navbar.scrolled .logo-img { height: 54px; }
   .nav-links {
     position: fixed;
     top: 0; right: -100%;
@@ -2240,10 +2251,9 @@ input, textarea, select { font-family: var(--font-main); }
   .nav-link { padding: 14px 16px; font-size: 1.05rem; display: block; border-radius: 8px; }
   .hamburger { display: flex; margin-right: 0; margin-left: auto; }
   .btn-book-nav { display: none; }
-  .logo-img { height: 68px; }
 
   /* ── Hero ── */
-  .hero { padding: 74px 20px 48px; min-height: 100svh; align-items: flex-start; }
+  .hero { padding: 70px 20px 36px; min-height: 88svh; align-items: flex-start; }
   .hero-bg-video { opacity: 0.6; filter: saturate(0.8) brightness(0.75); }
   .hero-title { font-size: clamp(2.4rem, 9vw, 3.4rem); margin-bottom: 16px; }
   .hero-desc { font-size: 1rem; margin-bottom: 28px; line-height: 1.7; }
@@ -2387,22 +2397,23 @@ input, textarea, select { font-family: var(--font-main); }
 ════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
   :root { font-size: 14px; }
-  .section-padding { padding: 44px 0; }
+  .section-padding { padding: 36px 0; }
+  .section-header { margin-bottom: 24px; }
   .container { padding: 0 14px; }
 
   /* ── Navbar ── */
-  .logo-img { height: 54px; }
-  .navbar { padding: 6px 0; }
-  .nav-container { padding: 0 16px; min-height: 54px; }
+  .navbar { padding: 5px 0; }
+  .nav-container { padding: 0 14px; min-height: 58px; }
+  .logo-img { height: 48px; width: 48px; }
 
   /* ── Hero ── */
-  .hero { padding: 68px 14px 44px; }
-  .hero-title { font-size: clamp(2rem, 9.5vw, 2.8rem); }
-  .hero-desc { font-size: 0.9rem; margin-bottom: 20px; }
-  .hero-badge { margin-bottom: 16px; }
-  .hero-stats { padding: 12px 8px; margin-bottom: 20px; }
-  .stat-number { font-size: 1.35rem; }
-  .stat-label { font-size: 0.65rem; }
+  .hero { padding: 64px 14px 28px; min-height: 84svh; }
+  .hero-title { font-size: clamp(2rem, 9.5vw, 2.8rem); margin-bottom: 12px; }
+  .hero-desc { font-size: 0.9rem; margin-bottom: 16px; }
+  .hero-badge { margin-bottom: 14px; font-size: 0.78rem; }
+  .hero-stats { padding: 10px 6px; margin-bottom: 16px; }
+  .stat-number { font-size: 1.3rem; }
+  .stat-label { font-size: 0.63rem; }
 
   /* ── باكات ── */
   .packages-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -2410,6 +2421,10 @@ input, textarea, select { font-family: var(--font-main); }
   .price-amount { font-size: 1.5rem; }
   .pack-features li { font-size: 0.74rem; }
   .pack-popular-ribbon { font-size: 0.6rem; padding: 3px 28px; }
+  /* تصغير هوامش العناصر الداخلية */
+  .pack-header { padding: 14px 10px; }
+  .pack-body { padding: 12px 10px; }
+  .pack-features { margin-bottom: 10px; }
 
   /* ── خدمات ── */
   .services-grid { grid-template-columns: 1fr; }
@@ -2427,10 +2442,17 @@ input, textarea, select { font-family: var(--font-main); }
 
   /* ── حجز ── */
   .booking-steps { display: none; }
-  .pack-select-grid { grid-template-columns: 1fr; }
-  .time-slots { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .step-nav { flex-direction: column; gap: 10px; }
-  .btn-next, .btn-prev, .btn-submit { width: 100%; justify-content: center; }
+  .pack-select-grid { grid-template-columns: 1fr; gap: 12px; }
+  .psc-header { padding: 14px 12px; font-size: 1.15rem; }
+  .psc-body { padding: 14px 12px; }
+  .psc-body h4 { font-size: 0.86rem; }
+  .psc-price { font-size: 1.05rem; }
+  .time-slots { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .time-slot { padding: 14px 8px; font-size: 0.82rem; border-radius: 10px; }
+  .form-group label { font-size: 0.9rem; margin-bottom: 8px; display: block; }
+  .form-group input, .form-group select, .form-group textarea { font-size: 1rem; padding: 13px 14px; }
+  .step-nav { flex-direction: column; gap: 10px; margin-top: 20px; }
+  .btn-next, .btn-prev, .btn-submit { width: 100%; justify-content: center; padding: 15px 20px; font-size: 1rem; }
 
   /* ── فوتر ── */
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -2443,6 +2465,13 @@ input, textarea, select { font-family: var(--font-main); }
   /* ── عام ── */
   .section-title { font-size: 1.7rem; }
   .section-desc  { font-size: 0.88rem; }
+
+  /* ── تقليص هوامش عامة ── */
+  .about-features { gap: 10px; }
+  .about-feature { padding: 12px 10px; }
+  .medical-card { padding: 20px 16px; gap: 16px; }
+  .testi-card { padding: 16px 14px; }
+  .reels-grid { gap: 8px; }
   .benefits-strip { padding: 14px 0; }
   .benefits-container {
     display: grid;

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة المدير — رحيق الحجامة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green:      #1B5E35;
+      --green-light:#2d8a50;
+      --gold:       #C9A96E;
+      --gold-dark:  #a07840;
+      --dark:       #0a1f12;
+      --bg:         #f4f7f5;
+      --white:      #ffffff;
+      --red:        #e53935;
+      --blue:       #1565C0;
+      --radius:     10px;
+    }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg);
+      color: #222;
+      min-height: 100vh;
+    }
+
+    /* ── Login ────────────────────────── */
+    #loginScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--dark), var(--green));
+    }
+    .login-box {
+      background: white;
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .login-logo { font-size: 2.4rem; color: var(--green); margin-bottom: 8px; }
+    .login-box h2 { font-size: 1.3rem; font-weight: 800; color: var(--dark); margin-bottom: 6px; }
+    .login-box p  { font-size: 0.85rem; color: #888; margin-bottom: 24px; }
+    .login-box input {
+      width: 100%; padding: 12px 14px; border: 1.5px solid #ddd;
+      border-radius: var(--radius); font-size: 1rem; font-family: inherit;
+      text-align: center; letter-spacing: 3px; margin-bottom: 14px;
+      outline: none; transition: border-color .2s;
+    }
+    .login-box input:focus { border-color: var(--green); }
+    .login-box button {
+      width: 100%; padding: 13px; background: var(--green);
+      color: white; border: none; border-radius: var(--radius);
+      font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer;
+      transition: background .2s;
+    }
+    .login-box button:hover { background: var(--green-light); }
+    .login-error { color: var(--red); font-size: 0.85rem; margin-top: 10px; display: none; }
+
+    /* ── Main App ─────────────────────── */
+    #app { display: none; }
+
+    .topbar {
+      background: var(--green);
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .topbar-title { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .topbar-title i { color: var(--gold); }
+    .topbar-actions { display: flex; gap: 10px; }
+    .topbar-btn {
+      background: rgba(255,255,255,0.15); border: none; color: white;
+      padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+      font-family: inherit; font-weight: 600; display: flex; align-items: center; gap: 6px;
+      transition: background .2s;
+    }
+    .topbar-btn:hover { background: rgba(255,255,255,0.25); }
+
+    .main-content { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+    /* ── Stats ────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .stat-icon.green  { background: #e8f5e9; color: var(--green); }
+    .stat-icon.gold   { background: #fff8e1; color: var(--gold-dark); }
+    .stat-icon.blue   { background: #e3f2fd; color: var(--blue); }
+    .stat-icon.red    { background: #ffebee; color: var(--red); }
+    .stat-info h3 { font-size: 1.6rem; font-weight: 800; color: var(--dark); }
+    .stat-info p  { font-size: 0.8rem; color: #888; }
+
+    /* ── Filters ──────────────────────── */
+    .filters {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .filters label { font-size: 0.85rem; font-weight: 700; color: #555; }
+    .filters input, .filters select {
+      padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px;
+      font-size: 0.9rem; font-family: inherit; outline: none;
+    }
+    .filters input:focus, .filters select:focus { border-color: var(--green); }
+    .filter-btn {
+      padding: 9px 18px; background: var(--green); color: white;
+      border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+    }
+    .filter-btn.clear { background: #eee; color: #555; }
+    .count-badge {
+      margin-right: auto;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    /* ── Table ────────────────────────── */
+    .table-wrap {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    thead th {
+      background: var(--green);
+      color: white;
+      padding: 13px 12px;
+      text-align: right;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    tbody tr { border-bottom: 1px solid #f0f0f0; transition: background .15s; }
+    tbody tr:hover { background: #f9fdf9; }
+    tbody td { padding: 12px; vertical-align: middle; }
+    .td-name  { font-weight: 700; color: var(--dark); }
+    .td-phone { color: var(--green); font-weight: 600; }
+    .td-date  { white-space: nowrap; }
+    .td-time  { font-weight: 700; color: var(--gold-dark); white-space: nowrap; }
+    .td-pack  { font-size: 0.78rem; color: #555; max-width: 180px; }
+    .td-price { font-weight: 800; color: var(--green); white-space: nowrap; }
+
+    /* Status badge */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-new     { background: #e8f5e9; color: #2e7d32; }
+    .badge-confirm { background: #e3f2fd; color: #1565c0; }
+    .badge-cancel  { background: #ffebee; color: #c62828; }
+
+    /* Actions */
+    .action-btns { display: flex; gap: 6px; }
+    .act-btn {
+      padding: 5px 10px; border: none; border-radius: 6px;
+      font-size: 0.75rem; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: opacity .2s;
+    }
+    .act-btn:hover { opacity: 0.8; }
+    .act-confirm { background: #e3f2fd; color: var(--blue); }
+    .act-cancel  { background: #ffebee; color: var(--red); }
+    .act-call    { background: #e8f5e9; color: var(--green); }
+
+    /* ── Loading / Empty ──────────────── */
+    .loading-state, .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+    }
+    .loading-state i { font-size: 2rem; animation: spin 1s linear infinite; }
+    .empty-state  i  { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Mobile ───────────────────────── */
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 700px; }
+      .topbar-title span { display: none; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ شاشة تسجيل الدخول ══════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo"><i class="fas fa-leaf"></i></div>
+    <h2>لوحة المدير</h2>
+    <p>رحيق الحجامة طنجة</p>
+    <input type="password" id="passwordInput" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()"><i class="fas fa-sign-in-alt"></i> دخول</button>
+    <div class="login-error" id="loginError">كلمة المرور غير صحيحة</div>
+  </div>
+</div>
+
+<!-- ══ التطبيق الرئيسي ════════════════════════════════════════ -->
+<div id="app">
+
+  <div class="topbar">
+    <div class="topbar-title">
+      <i class="fas fa-leaf"></i>
+      <span>لوحة الحجوزات — رحيق الحجامة</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="loadBookings()">
+        <i class="fas fa-sync-alt"></i> تحديث
+      </button>
+      <button class="topbar-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> خروج
+      </button>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- إحصائيات -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-info">
+          <h3 id="statTotal">0</h3>
+          <p>إجمالي الحجوزات</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-clock"></i></div>
+        <div class="stat-info">
+          <h3 id="statNew">0</h3>
+          <p>حجوزات جديدة</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gold"><i class="fas fa-calendar-day"></i></div>
+        <div class="stat-info">
+          <h3 id="statToday">0</h3>
+          <p>مواعيد اليوم</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-coins"></i></div>
+        <div class="stat-info">
+          <h3 id="statRevenue">0</h3>
+          <p>إيرادات متوقعة (درهم)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- فلاتر -->
+    <div class="filters">
+      <label>التاريخ:</label>
+      <input type="date" id="filterDate" oninput="applyFilters()">
+      <label>الحالة:</label>
+      <select id="filterStatus" onchange="applyFilters()">
+        <option value="">الكل</option>
+        <option value="جديد">جديد</option>
+        <option value="مؤكد">مؤكد</option>
+        <option value="ملغي">ملغي</option>
+      </select>
+      <button class="filter-btn clear" onclick="clearFilters()">
+        <i class="fas fa-times"></i> مسح الفلتر
+      </button>
+      <span class="count-badge" id="countBadge"></span>
+    </div>
+
+    <!-- الجدول -->
+    <div class="table-wrap">
+      <div class="loading-state" id="loadingState">
+        <i class="fas fa-spinner"></i>
+        <p style="margin-top:12px">جاري تحميل الحجوزات...</p>
+      </div>
+      <div class="empty-state" id="emptyState" style="display:none">
+        <i class="fas fa-calendar-times"></i>
+        لا توجد حجوزات
+      </div>
+      <table id="bookingsTable" style="display:none">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>الهاتف</th>
+            <th>التاريخ</th>
+            <th>الوقت</th>
+            <th>الباك</th>
+            <th>السعر</th>
+            <th>الحالة الصحية</th>
+            <th>الحالة</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══ إعدادات ════════════════════════════════════════════════════
+// ضع كلمة المرور التي تريدها:
+const ADMIN_PASSWORD = 'rahiq2025';
+
+// ضع رابط Apps Script هنا (نفس الرابط في script.js):
+const API_URL = 'https://script.google.com/macros/s/AKfycbyuHMcQv6VeEZDIi-8_Oguf9xPFXnDka-weTGxioRsKDgAi_LGvjvQHLRC287JLulYHnw/exec';
+
+// ══ بيانات ════════════════════════════════════════════════════
+let allBookings = [];
+
+// ══ تسجيل الدخول ══════════════════════════════════════════════
+function login() {
+  const pw = document.getElementById('passwordInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadBookings();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+function logout() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('passwordInput').value = '';
+}
+
+// ══ تحميل الحجوزات ═══════════════════════════════════════════
+async function loadBookings() {
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('bookingsTable').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+
+  if (API_URL) {
+    try {
+      const res  = await fetch(`${API_URL}?action=getAll`);
+      const data = await res.json();
+      allBookings = data.bookings || [];
+    } catch (e) {
+      allBookings = getLocalBookings();
+    }
+  } else {
+    allBookings = getLocalBookings();
+  }
+
+  updateStats();
+  applyFilters();
+}
+
+function getLocalBookings() {
+  const raw = JSON.parse(localStorage.getItem('rahiqBookings') || '[]');
+  return raw.map(b => ({
+    'ID':        b.id,
+    'الاسم':     b.name,
+    'الهاتف':    b.phone,
+    'التاريخ':   b.date,
+    'الوقت':     b.time,
+    'الباك':     b.pack,
+    'السعر':     b.price + ' درهم',
+    'الحالة':    b.status || 'جديد',
+    'ضغط':       b.medical?.tension || '-',
+    'سكر':       b.medical?.sugar   || '-',
+    'قلب':       b.medical?.heart   || '-',
+    'أدوية':     b.medical?.meds    || '-',
+  }));
+}
+
+// ══ إحصائيات ══════════════════════════════════════════════════
+function updateStats() {
+  const today = new Date().toISOString().split('T')[0];
+  const total   = allBookings.length;
+  const newB    = allBookings.filter(b => b['الحالة'] === 'جديد').length;
+  const todayB  = allBookings.filter(b => b['التاريخ'] === today).length;
+  const revenue = allBookings
+    .filter(b => b['الحالة'] !== 'ملغي')
+    .reduce((sum, b) => sum + (parseInt(b['السعر']) || 0), 0);
+
+  document.getElementById('statTotal').textContent   = total;
+  document.getElementById('statNew').textContent     = newB;
+  document.getElementById('statToday').textContent   = todayB;
+  document.getElementById('statRevenue').textContent = revenue;
+}
+
+// ══ فلترة وعرض ════════════════════════════════════════════════
+function applyFilters() {
+  const dateFilter   = document.getElementById('filterDate').value;
+  const statusFilter = document.getElementById('filterStatus').value;
+
+  let filtered = allBookings.filter(b => {
+    if (dateFilter   && b['التاريخ'] !== dateFilter)   return false;
+    if (statusFilter && b['الحالة']  !== statusFilter) return false;
+    return true;
+  });
+
+  document.getElementById('countBadge').textContent = `${filtered.length} حجز`;
+  renderTable(filtered);
+}
+
+function clearFilters() {
+  document.getElementById('filterDate').value   = '';
+  document.getElementById('filterStatus').value = '';
+  applyFilters();
+}
+
+function renderTable(bookings) {
+  document.getElementById('loadingState').style.display = 'none';
+
+  if (bookings.length === 0) {
+    document.getElementById('bookingsTable').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('bookingsTable').style.display = 'table';
+
+  const tbody = document.getElementById('bookingsBody');
+  tbody.innerHTML = bookings.map((b, i) => {
+    const status    = b['الحالة'] || 'جديد';
+    const badgeClass = status === 'مؤكد' ? 'badge-confirm' : status === 'ملغي' ? 'badge-cancel' : 'badge-new';
+    const id         = b['ID'] || '';
+    const dateAr     = b['التاريخ'] ? new Date(b['التاريخ']).toLocaleDateString('ar-MA',{weekday:'short',day:'numeric',month:'short'}) : b['التاريخ'];
+    const medical    = b['الحالة الصحية'] || `ضغط: ${b['ضغط']||'-'} | سكر: ${b['سكر']||'-'} | قلب: ${b['قلب']||'-'} | أدوية: ${b['أدوية']||'-'}`;
+    return `
+      <tr>
+        <td style="color:#aaa;font-size:.8rem">${i+1}</td>
+        <td class="td-name">${b['الاسم']||''}</td>
+        <td class="td-phone">
+          <a href="tel:${b['الهاتف']}" style="color:inherit;text-decoration:none">
+            <i class="fas fa-phone" style="font-size:.7rem"></i> ${b['الهاتف']||''}
+          </a>
+        </td>
+        <td class="td-date">${dateAr||''}</td>
+        <td class="td-time">${formatTime(b['الوقت'])||''}</td>
+        <td class="td-pack">${b['الباك']||''}</td>
+        <td class="td-price">${b['السعر']||''}</td>
+        <td style="font-size:.75rem;color:#777">${medical}</td>
+        <td><span class="badge ${badgeClass}">${status}</span></td>
+        <td>
+          <div class="action-btns">
+            <a href="https://wa.me/${cleanPhone(b['الهاتف'])}" target="_blank" class="act-btn act-call">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+            ${status !== 'مؤكد' ? `<button class="act-btn act-confirm" onclick="setStatus('${id}','مؤكد',this)">تأكيد</button>` : ''}
+            ${status !== 'ملغي' ? `<button class="act-btn act-cancel"  onclick="setStatus('${id}','ملغي',this)">إلغاء</button>` : ''}
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+// ══ تحديث الحالة ══════════════════════════════════════════════
+async function setStatus(id, status, btn) {
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  if (API_URL) {
+    try {
+      await fetch(`${API_URL}?action=update&id=${id}&status=${encodeURIComponent(status)}`);
+    } catch (e) {}
+  }
+
+  // Update locally
+  const local = JSON.parse(localStorage.getItem('rahiqBookings') || '[]');
+  const idx   = local.findIndex(b => String(b.id) === String(id));
+  if (idx > -1) { local[idx].status = status; localStorage.setItem('rahiqBookings', JSON.stringify(local)); }
+
+  const booking = allBookings.find(b => String(b['ID']) === String(id));
+  if (booking) booking['الحالة'] = status;
+
+  updateStats();
+  applyFilters();
+}
+
+// ══ مساعدات ═══════════════════════════════════════════════════
+function formatTime(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  return `${h > 12 ? h-12 : h || 12}:${String(m||0).padStart(2,'0')} ${h >= 12 ? 'م' : 'ص'}`;
+}
+function cleanPhone(p) {
+  if (!p) return '';
+  return p.replace(/\D/g,'').replace(/^0/, '212');
+}
+</script>
+</body>
+</html>

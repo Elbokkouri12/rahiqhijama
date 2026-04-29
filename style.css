@@ -2272,7 +2272,7 @@ input, textarea, select { font-family: var(--font-main); }
   .btn-book-nav { display: none; }
 
   /* ── Hero ── */
-  .hero { padding: 70px 20px 36px; min-height: 88svh; align-items: flex-start; }
+  .hero { padding: 62px 20px 28px; min-height: 88svh; align-items: center; }
   .hero-bg-video { opacity: 0.6; filter: saturate(0.8) brightness(0.75); }
   .hero-title { font-size: clamp(2.4rem, 9vw, 3.4rem); margin-bottom: 16px; }
   .hero-desc { font-size: 1rem; margin-bottom: 28px; line-height: 1.7; }
@@ -2439,7 +2439,7 @@ input, textarea, select { font-family: var(--font-main); }
   .logo-img { height: 48px; width: 48px; }
 
   /* ── Hero ── */
-  .hero { padding: 64px 14px 28px; min-height: 84svh; }
+  .hero { padding: 62px 14px 20px; min-height: 84svh; align-items: center; }
   .hero-title { font-size: clamp(2rem, 9.5vw, 2.8rem); margin-bottom: 12px; }
   .hero-desc { font-size: 0.9rem; margin-bottom: 16px; }
   .hero-badge { margin-bottom: 14px; font-size: 0.78rem; }

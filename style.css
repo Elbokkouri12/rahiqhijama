@@ -2224,6 +2224,25 @@ input, textarea, select { font-family: var(--font-main); }
     left: 50%;
     transform: translateX(-50%);
   }
+  /* خطوط ذهبية زخرفية على يمين ويسار اللوجو */
+  .nav-logo::before,
+  .nav-logo::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1.5px;
+    width: 38px;
+    background: linear-gradient(90deg, rgba(201,169,110,0.85), transparent);
+    border-radius: 2px;
+  }
+  .nav-logo::before {
+    left: calc(100% + 10px);
+  }
+  .nav-logo::after {
+    right: calc(100% + 10px);
+    background: linear-gradient(270deg, rgba(201,169,110,0.85), transparent);
+  }
   /* اللوجو دائري مع حلقة ذهبية — يظهر واضحاً على الخلفية الخضراء */
   .logo-img {
     height: 54px;
@@ -2257,7 +2276,14 @@ input, textarea, select { font-family: var(--font-main); }
   .hero-bg-video { opacity: 0.6; filter: saturate(0.8) brightness(0.75); }
   .hero-title { font-size: clamp(2.4rem, 9vw, 3.4rem); margin-bottom: 16px; }
   .hero-desc { font-size: 1rem; margin-bottom: 28px; line-height: 1.7; }
-  .hero-badge { font-size: 0.82rem; padding: 7px 16px; margin-bottom: 20px; }
+  .hero-badge {
+    font-size: 0.85rem;
+    padding: 8px 18px;
+    margin-bottom: 20px;
+    background: rgba(201,169,110,0.22);
+    border: 1.5px solid rgba(201,169,110,0.6);
+    box-shadow: 0 0 16px rgba(201,169,110,0.2);
+  }
 
   /* إحصائيات الهيرو — صف أفقي واحد */
   .hero-stats {
@@ -2384,6 +2410,12 @@ input, textarea, select { font-family: var(--font-main); }
   .contact-grid { grid-template-columns: 1fr; }
   .map-wrapper { height: 260px; }
 
+  /* ── CTA section ── */
+  .cta-section { padding: 44px 20px; }
+  .cta-content h2 { font-size: 1.5rem; margin-bottom: 12px; }
+  .cta-content p { font-size: 0.9rem; margin-bottom: 24px; }
+  .btn-cta { padding: 14px 28px; font-size: 0.95rem; }
+
   /* ── الفوتر ── */
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
   .footer-bottom .container { flex-direction: column; text-align: center; gap: 8px; }
@@ -2465,6 +2497,11 @@ input, textarea, select { font-family: var(--font-main); }
   /* ── عام ── */
   .section-title { font-size: 1.7rem; }
   .section-desc  { font-size: 0.88rem; }
+
+  /* ── CTA + خريطة ── */
+  .cta-section { padding: 36px 16px; }
+  .cta-content h2 { font-size: 1.4rem; }
+  .map-wrapper { height: 220px; }
 
   /* ── تقليص هوامش عامة ── */
   .about-features { gap: 10px; }

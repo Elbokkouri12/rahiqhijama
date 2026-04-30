@@ -12,7 +12,7 @@ window.addEventListener('load', () => {
   setTimeout(() => {
     loader.classList.add('hidden');
     initAnimations();
-  }, 1200);
+  }, 400);
 });
 
 // ========== PARTICLES ==========
@@ -601,17 +601,22 @@ document.querySelectorAll('.reel-card').forEach(card => {
   });
 });
 
-// Auto-play on scroll into view, pause when out
+// Lazy load + autoplay reels — يُحمَّل الفيديو فقط عند الاقتراب منه
 const reelObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     const video = entry.target.querySelector('.reel-video');
     if (entry.isIntersecting) {
+      // تحميل الفيديو إذا لم يُحمَّل بعد
+      if (video.dataset.src && !video.src) {
+        video.src = video.dataset.src;
+        video.load();
+      }
       video.play().catch(() => {});
     } else {
       video.pause();
     }
   });
-}, { threshold: 0.1 });
+}, { threshold: 0.1, rootMargin: '200px' });
 
 document.querySelectorAll('.reel-card').forEach(card => reelObserver.observe(card));
 

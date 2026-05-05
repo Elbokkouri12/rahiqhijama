@@ -7,12 +7,13 @@
 const BOOKING_API = 'https://script.google.com/macros/s/AKfycbyuHMcQv6VeEZDIi-8_Oguf9xPFXnDka-weTGxioRsKDgAi_LGvjvQHLRC287JLulYHnw/exec';
 
 // ========== LOADER ==========
-window.addEventListener('load', () => {
+// DOMContentLoaded يشتغل فور اكتمال HTML — لا ينتظر الفيديوهات والصور
+document.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById('loader');
   setTimeout(() => {
     loader.classList.add('hidden');
     initAnimations();
-  }, 400);
+  }, 300);
 });
 
 // ========== PARTICLES ==========
@@ -606,9 +607,9 @@ const reelObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     const video = entry.target.querySelector('.reel-video');
     if (entry.isIntersecting) {
-      // تحميل الفيديو إذا لم يُحمَّل بعد
-      if (video.dataset.src && !video.src) {
-        video.src = video.dataset.src;
+      // getAttribute تتحقق من الـ attribute مباشرة (video.src يعيد URL الصفحة إذا فارغ)
+      if (video.dataset.src && !video.getAttribute('src')) {
+        video.setAttribute('src', video.dataset.src);
         video.load();
       }
       video.play().catch(() => {});
@@ -616,7 +617,7 @@ const reelObserver = new IntersectionObserver((entries) => {
       video.pause();
     }
   });
-}, { threshold: 0.1, rootMargin: '200px' });
+}, { threshold: 0.05, rootMargin: '300px' });
 
 document.querySelectorAll('.reel-card').forEach(card => reelObserver.observe(card));
 
@@ -624,8 +625,13 @@ document.querySelectorAll('.reel-card').forEach(card => reelObserver.observe(car
 document.addEventListener('touchstart', function reelUnlock() {
   document.querySelectorAll('.reel-card').forEach(card => {
     const rect = card.getBoundingClientRect();
+    const video = card.querySelector('.reel-video');
     if (rect.top < window.innerHeight && rect.bottom > 0) {
-      card.querySelector('.reel-video').play().catch(() => {});
+      if (video.dataset.src && !video.getAttribute('src')) {
+        video.setAttribute('src', video.dataset.src);
+        video.load();
+      }
+      video.play().catch(() => {});
     }
   });
   document.removeEventListener('touchstart', reelUnlock);
@@ -640,8 +646,6 @@ document.addEventListener('visibilitychange', () => {
 
 // ========== HERO VIDEO — mid-speech loop + sound toggle ==========
 (function () {
-  // Video is pre-cut 5s–52s of original (47s total). Phone number removed at source.
-  // Loop the full clean video: start from 0, loop back before natural end.
   const VIDEO_START = 0;
   const VIDEO_END   = 46;
 
@@ -657,6 +661,15 @@ document.addEventListener('visibilitychange', () => {
   vid.addEventListener('loadedmetadata', () => {
     vid.currentTime = VIDEO_START;
     vid.play().catch(() => {});
+  });
+
+  // بدء تحميل الفيديو فور اكتمال HTML — لا ينتظر الـ load event
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!vid.getAttribute('src')) {
+      const source = vid.querySelector('source');
+      if (source) vid.setAttribute('src', source.getAttribute('src'));
+    }
+    vid.load();
   });
 
   // throttle timeupdate — فحص 4 مرات/ثانية بدل 30

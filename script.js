@@ -602,22 +602,27 @@ document.querySelectorAll('.reel-card').forEach(card => {
   });
 });
 
-// Lazy load + autoplay reels — يُحمَّل الفيديو فقط عند الاقتراب منه
+// Lazy load + autoplay reels
 const reelObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     const video = entry.target.querySelector('.reel-video');
     if (entry.isIntersecting) {
-      // getAttribute تتحقق من الـ attribute مباشرة (video.src يعيد URL الصفحة إذا فارغ)
       if (video.dataset.src && !video.getAttribute('src')) {
+        // تحميل الفيديو + تشغيل فور توفر بيانات كافية
         video.setAttribute('src', video.dataset.src);
         video.load();
+        video.addEventListener('canplay', () => {
+          video.play().catch(() => {});
+        }, { once: true });
+      } else {
+        video.play().catch(() => {});
       }
-      video.play().catch(() => {});
     } else {
       video.pause();
     }
   });
-}, { threshold: 0.05, rootMargin: '300px' });
+// rootMargin كبير = يبدأ التحميل 600px قبل وصول المستخدم للقسم
+}, { threshold: 0.01, rootMargin: '600px 0px' });
 
 document.querySelectorAll('.reel-card').forEach(card => reelObserver.observe(card));
 
@@ -626,12 +631,14 @@ document.addEventListener('touchstart', function reelUnlock() {
   document.querySelectorAll('.reel-card').forEach(card => {
     const rect = card.getBoundingClientRect();
     const video = card.querySelector('.reel-video');
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
+    if (rect.top < window.innerHeight + 600 && rect.bottom > -600) {
       if (video.dataset.src && !video.getAttribute('src')) {
         video.setAttribute('src', video.dataset.src);
         video.load();
+        video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
+      } else if (video.paused) {
+        video.play().catch(() => {});
       }
-      video.play().catch(() => {});
     }
   });
   document.removeEventListener('touchstart', reelUnlock);

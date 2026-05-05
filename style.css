@@ -1097,6 +1097,7 @@ input, textarea, select { font-family: var(--font-main); }
   height: 100%;
   object-fit: cover;
   display: block;
+  background: #0d2a18;
 }
 
 /* Mute button */

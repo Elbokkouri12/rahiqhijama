@@ -593,7 +593,7 @@ input, textarea, select { font-family: var(--font-main); }
   border-radius: 30px;
   cursor: pointer;
   font-size: 0.8rem;
-  font-family: var(--font-ar);
+  font-family: var(--font-main);
   font-weight: 600;
   transition: background 0.25s, border-color 0.25s, transform 0.2s;
   letter-spacing: 0.3px;
@@ -1898,7 +1898,7 @@ input, textarea, select { font-family: var(--font-main); }
 /* Pack Selection */
 .pack-select-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -3042,7 +3042,6 @@ input, textarea, select { font-family: var(--font-main); }
   .psc-body h4 { font-size: 0.86rem; }
   .psc-price { font-size: 1.05rem; }
   .time-slots { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .time-slot { font-size: 0.80rem; }
   .time-slot { padding: 14px 8px; font-size: 0.82rem; border-radius: 10px; }
   .form-group label { font-size: 0.9rem; margin-bottom: 8px; display: block; }
   .form-group input, .form-group select, .form-group textarea { font-size: 1rem; padding: 13px 14px; }

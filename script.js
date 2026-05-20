@@ -101,10 +101,15 @@ function updateActiveNav() {
 
 // ========== SCROLL PROGRESS BAR ==========
 const scrollProgressEl = document.getElementById('scrollProgress');
+let progressTicking = false;
 window.addEventListener('scroll', () => {
-  if (!scrollProgressEl) return;
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  scrollProgressEl.style.width = (window.scrollY / total * 100) + '%';
+  if (!scrollProgressEl || progressTicking) return;
+  progressTicking = true;
+  requestAnimationFrame(() => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    scrollProgressEl.style.width = (window.scrollY / total * 100) + '%';
+    progressTicking = false;
+  });
 }, { passive: true });
 
 // ========== CUSTOM CURSOR ==========

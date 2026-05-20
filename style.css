@@ -2862,7 +2862,9 @@ input, textarea, select { font-family: var(--font-main); }
   /* ── من نحن ── */
   .about-grid { grid-template-columns: 1fr; gap: 32px; }
   .about-visual { order: 2; }
-  .about-img-frame { width: 100%; max-width: 300px; margin: 0 auto; }
+  .about-img-frame { width: 100%; max-width: 280px; height: 200px; margin: 0 auto; }
+  .about-icon { font-size: 4rem; }
+  .about-badge-floating { bottom: -14px; right: -8px; padding: 10px 14px; font-size: 0.78rem; }
   .about-features { grid-template-columns: 1fr 1fr; gap: 12px; }
   .about-feature { padding: 14px 12px; }
 
@@ -3065,6 +3067,8 @@ input, textarea, select { font-family: var(--font-main); }
   .map-wrapper { height: 220px; }
 
   /* ── تقليص هوامش عامة ── */
+  .about-img-frame { max-width: 240px; height: 180px; }
+  .about-icon { font-size: 3.2rem; }
   .about-features { gap: 10px; }
   .about-feature { padding: 12px 10px; }
   .medical-card { padding: 20px 16px; gap: 16px; }

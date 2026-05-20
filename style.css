@@ -681,13 +681,22 @@ input, textarea, select { font-family: var(--font-main); }
   gap: 0;
   width: max-content;
   animation: marquee-rtl 28s linear infinite;
+  -webkit-animation: marquee-rtl 28s linear infinite;
   padding: 18px 0;
+  will-change: transform;
 }
 @keyframes marquee-rtl {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-.benefits-strip:hover .benefits-container { animation-play-state: paused; }
+@-webkit-keyframes marquee-rtl {
+  0%   { -webkit-transform: translateX(0); }
+  100% { -webkit-transform: translateX(-50%); }
+}
+.benefits-strip:hover .benefits-container {
+  animation-play-state: paused;
+  -webkit-animation-play-state: paused;
+}
 
 .benefit-item {
   display: flex;
@@ -3061,11 +3070,12 @@ input, textarea, select { font-family: var(--font-main); }
   .medical-card { padding: 20px 16px; gap: 16px; }
   .testi-card { padding: 16px 14px; }
   .reels-grid { gap: 8px; }
-  .benefits-strip { padding: 0; }
+  .benefits-strip { padding: 0; overflow: hidden; }
   .benefits-container {
-    display: flex;
-    width: max-content;
-    animation: marquee-rtl 14s linear infinite;
+    display: flex !important;
+    width: max-content !important;
+    animation: marquee-rtl 14s linear infinite !important;
+    -webkit-animation: marquee-rtl 14s linear infinite !important;
     padding: 14px 0;
   }
   .benefit-item { font-size: 0.78rem; gap: 7px; white-space: nowrap; }

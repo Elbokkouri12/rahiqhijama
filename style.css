@@ -3005,7 +3005,11 @@ input, textarea, select { font-family: var(--font-main); }
   .pack-features { margin-bottom: 10px; }
 
   /* ── خدمات ── */
-  .services-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .service-detail-card { padding: 18px 12px; }
+  .sdc-icon { width: 50px; height: 50px; font-size: 1.3rem; margin-bottom: 10px; }
+  .service-detail-card h4 { font-size: 0.88rem; }
+  .service-detail-card p { font-size: 0.76rem; }
 
   /* ── ريلز ── */
   .reels-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -3056,13 +3060,13 @@ input, textarea, select { font-family: var(--font-main); }
   .medical-card { padding: 20px 16px; gap: 16px; }
   .testi-card { padding: 16px 14px; }
   .reels-grid { gap: 8px; }
-  .benefits-strip { padding: 14px 0; }
+  .benefits-strip { padding: 0; }
   .benefits-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 6px;
-    padding: 0 14px;
+    display: flex;
+    width: max-content;
+    animation: marquee-rtl 14s linear infinite;
+    padding: 14px 0;
   }
-  .benefit-item { font-size: 0.8rem; gap: 7px; }
-  .benefit-item i { font-size: 0.95rem; }
+  .benefit-item { font-size: 0.78rem; gap: 7px; white-space: nowrap; }
+  .benefit-item i { font-size: 0.92rem; }
 }

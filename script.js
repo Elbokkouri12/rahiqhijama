@@ -157,33 +157,50 @@ function initAnimations() {
   // ── Hero Timeline ──
   const heroTl = gsap.timeline({ delay: 0.2 });
   heroTl
-    .from('.hero-badge', {
-      y: -50, opacity: 0, duration: 0.9, ease: 'back.out(2)'
-    })
-    .from('.hero-word.word-1', {
-      y: 80, opacity: 0, duration: 0.8, ease: 'power4.out'
-    }, '-=0.4')
-    .from('.hero-word.word-2', {
-      y: 80, opacity: 0, duration: 0.8, ease: 'power4.out'
-    }, '-=0.55')
-    .from('.hero-word.word-3', {
-      y: 40, opacity: 0, duration: 0.7, ease: 'power3.out'
-    }, '-=0.45')
-    .from('.hero-desc', {
-      y: 30, opacity: 0, duration: 0.7, ease: 'power2.out'
-    }, '-=0.4')
-    .from('.hero-stats', {
-      scale: 0.75, opacity: 0, duration: 0.8, ease: 'back.out(1.8)'
-    }, '-=0.35')
-    .from('.hero-cta .btn-primary', {
-      x: 40, opacity: 0, duration: 0.6, ease: 'power3.out'
-    }, '-=0.4')
-    .from('.hero-cta .btn-secondary', {
-      x: -40, opacity: 0, duration: 0.6, ease: 'power3.out'
-    }, '-=0.5')
-    .from('.hero-scroll-indicator', {
-      y: 20, opacity: 0, duration: 0.6
-    }, '-=0.2');
+    .fromTo('.hero-badge',
+      { y: -50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.9, ease: 'back.out(2)', clearProps: 'transform,opacity' }
+    )
+    .fromTo('.hero-word.word-1',
+      { y: 80, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out', clearProps: 'transform,opacity' },
+      '-=0.4'
+    )
+    .fromTo('.hero-word.word-2',
+      { y: 80, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out', clearProps: 'transform,opacity' },
+      '-=0.55'
+    )
+    .fromTo('.hero-word.word-3',
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', clearProps: 'transform,opacity' },
+      '-=0.45'
+    )
+    .fromTo('.hero-desc',
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out', clearProps: 'transform,opacity' },
+      '-=0.4'
+    )
+    .fromTo('.hero-stats',
+      { scale: 0.75, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.8)', clearProps: 'transform,opacity' },
+      '-=0.35'
+    )
+    .fromTo('.hero-cta .btn-primary',
+      { x: 40, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.6, ease: 'power3.out', clearProps: 'transform,opacity' },
+      '-=0.4'
+    )
+    .fromTo('.hero-cta .btn-secondary',
+      { x: -40, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.6, ease: 'power3.out', clearProps: 'transform,opacity' },
+      '-=0.5'
+    )
+    .fromTo('.hero-scroll-indicator',
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, clearProps: 'transform,opacity' },
+      '-=0.2'
+    );
 
   // ── Hero Parallax (video) ──
   gsap.to('.hero-bg-video', {

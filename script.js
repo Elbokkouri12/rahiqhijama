@@ -197,15 +197,6 @@ function initAnimations() {
     ease: 'none'
   });
 
-  // ── Hero orbs parallax ──
-  gsap.to('.orb-1', {
-    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 2 },
-    y: -120, ease: 'none'
-  });
-  gsap.to('.orb-2', {
-    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 3 },
-    y: -80, ease: 'none'
-  });
 
   // ── Stats counter with GSAP ──
   ScrollTrigger.create({
@@ -229,119 +220,68 @@ function initAnimations() {
     }
   });
 
+  // Helper: fromTo guarantees final state is always opacity:1
+  function ft(selector, trigger, from, toExtra) {
+    const to = Object.assign({ opacity: 1, y: 0, x: 0, scale: 1, rotation: 0,
+      clearProps: 'transform,opacity',
+      scrollTrigger: { trigger: trigger || selector, start: 'top 88%', once: true }
+    }, toExtra || {});
+    gsap.fromTo(selector, Object.assign({ opacity: 0 }, from), to);
+  }
+
   // ── Section Headers ──
   gsap.utils.toArray('.section-header').forEach(header => {
-    gsap.from(header, {
-      scrollTrigger: { trigger: header, start: 'top 88%', once: true },
-      y: 60, opacity: 0, duration: 0.9, ease: 'power3.out'
-    });
+    ft(header, header, { y: 60 }, { duration: 0.9, ease: 'power3.out' });
   });
 
   // ── About Section ──
-  gsap.from('.about-visual', {
-    scrollTrigger: { trigger: '.about-grid', start: 'top 78%', once: true },
-    x: 80, opacity: 0, duration: 1.1, ease: 'power4.out'
-  });
-  gsap.from('.about-content', {
-    scrollTrigger: { trigger: '.about-grid', start: 'top 78%', once: true },
-    x: -80, opacity: 0, duration: 1.1, ease: 'power4.out', delay: 0.2
-  });
-  gsap.from('.feature-item', {
-    scrollTrigger: { trigger: '.about-features', start: 'top 85%', once: true },
-    x: -30, opacity: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out'
-  });
+  ft('.about-visual', '.about-grid', { x: 80 }, { duration: 1.1, ease: 'power4.out', scrollTrigger: { trigger: '.about-grid', start: 'top 78%', once: true } });
+  ft('.about-content', '.about-grid', { x: -80 }, { duration: 1.1, ease: 'power4.out', delay: 0.2, scrollTrigger: { trigger: '.about-grid', start: 'top 78%', once: true } });
+  ft('.feature-item', '.about-features', { x: -30 }, { duration: 0.5, stagger: 0.12, ease: 'power2.out', scrollTrigger: { trigger: '.about-features', start: 'top 85%', once: true } });
 
-  // ── Package Cards — stagger from below ──
-  gsap.from('.package-card', {
-    scrollTrigger: { trigger: '.packages-grid', start: 'top 82%', once: true },
-    y: 100, opacity: 0, duration: 0.8,
-    stagger: { each: 0.15, ease: 'power1.in' },
-    ease: 'power3.out'
-  });
+  // ── Package Cards ──
+  ft('.package-card', '.packages-grid', { y: 100 }, { duration: 0.8, stagger: { each: 0.15, ease: 'power1.in' }, ease: 'power3.out', scrollTrigger: { trigger: '.packages-grid', start: 'top 82%', once: true } });
 
   // ── Service Detail Cards ──
-  gsap.from('.service-detail-card', {
-    scrollTrigger: { trigger: '.services-grid', start: 'top 82%', once: true },
-    y: 60, opacity: 0, scale: 0.92, duration: 0.65,
-    stagger: 0.12, ease: 'back.out(1.4)'
-  });
+  ft('.service-detail-card', '.services-grid', { y: 60, scale: 0.92 }, { duration: 0.65, stagger: 0.12, ease: 'back.out(1.4)', scrollTrigger: { trigger: '.services-grid', start: 'top 82%', once: true } });
 
   // ── How It Works Steps ──
-  gsap.from('.step-item', {
-    scrollTrigger: { trigger: '.steps-grid', start: 'top 80%', once: true },
-    y: 50, opacity: 0, duration: 0.6,
-    stagger: 0.2, ease: 'power2.out'
-  });
+  ft('.step-item', '.steps-grid', { y: 50 }, { duration: 0.6, stagger: 0.2, ease: 'power2.out', scrollTrigger: { trigger: '.steps-grid', start: 'top 80%', once: true } });
 
   // ── Medical Card ──
-  gsap.from('.medical-card', {
-    scrollTrigger: { trigger: '.medical-card', start: 'top 82%', once: true },
-    y: 50, opacity: 0, scale: 0.96, duration: 0.9, ease: 'power3.out'
-  });
+  ft('.medical-card', '.medical-card', { y: 50, scale: 0.96 }, { duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: '.medical-card', start: 'top 82%', once: true } });
 
   // ── Reel Cards ──
-  gsap.from('.reel-card', {
-    scrollTrigger: { trigger: '.reels-grid', start: 'top 82%', once: true },
-    scale: 0.7, opacity: 0, duration: 0.7,
-    stagger: 0.15, ease: 'back.out(1.6)'
-  });
+  ft('.reel-card', '.reels-grid', { scale: 0.7 }, { duration: 0.7, stagger: 0.15, ease: 'back.out(1.6)', scrollTrigger: { trigger: '.reels-grid', start: 'top 82%', once: true } });
 
-  // ── Certifications — diagonal cascade ──
-  gsap.from('.cert-photo-item', {
-    scrollTrigger: { trigger: '.cert-photos-grid', start: 'top 80%', once: true },
-    y: 70, opacity: 0, rotation: 4, duration: 0.7,
-    stagger: { each: 0.1, from: 'start' },
-    ease: 'back.out(1.3)'
-  });
+  // ── Certifications ──
+  ft('.cert-photo-item', '.cert-photos-grid', { y: 70, rotation: 4 }, { duration: 0.7, stagger: { each: 0.1, from: 'start' }, ease: 'back.out(1.3)', scrollTrigger: { trigger: '.cert-photos-grid', start: 'top 80%', once: true } });
 
-  // ── Testimonials — alternating ──
+  // ── Testimonials ──
   gsap.utils.toArray('.testi-card').forEach((card, i) => {
-    gsap.from(card, {
-      scrollTrigger: { trigger: card, start: 'top 88%', once: true },
-      x: i % 2 === 0 ? -60 : 60,
-      opacity: 0, duration: 0.8,
-      delay: (i % 3) * 0.1,
-      ease: 'power3.out'
-    });
+    gsap.fromTo(card,
+      { opacity: 0, x: i % 2 === 0 ? -60 : 60 },
+      { opacity: 1, x: 0, duration: 0.8, delay: (i % 3) * 0.1, ease: 'power3.out', clearProps: 'transform,opacity',
+        scrollTrigger: { trigger: card, start: 'top 88%', once: true }
+      }
+    );
   });
 
-  // ── Testi stats ──
-  gsap.from('.testi-stat', {
-    scrollTrigger: { trigger: '.testi-stats', start: 'top 85%', once: true },
-    scale: 0.7, opacity: 0, duration: 0.6, stagger: 0.15, ease: 'back.out(2)'
-  });
+  // ── Testi Stats ──
+  ft('.testi-stat', '.testi-stats', { scale: 0.7 }, { duration: 0.6, stagger: 0.15, ease: 'back.out(2)', scrollTrigger: { trigger: '.testi-stats', start: 'top 85%', once: true } });
 
-  // ── FAQ items ──
-  gsap.from('.faq-item', {
-    scrollTrigger: { trigger: '.faq-list', start: 'top 82%', once: true },
-    x: 50, opacity: 0, duration: 0.5,
-    stagger: 0.1, ease: 'power2.out'
-  });
+  // ── FAQ Items ──
+  ft('.faq-item', '.faq-list', { x: 50 }, { duration: 0.5, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: '.faq-list', start: 'top 82%', once: true } });
 
-  // ── Contact cards ──
-  gsap.from('.contact-card', {
-    scrollTrigger: { trigger: '.contact-grid', start: 'top 82%', once: true },
-    x: 40, opacity: 0, duration: 0.6,
-    stagger: 0.12, ease: 'power2.out'
-  });
-  gsap.from('.contact-map', {
-    scrollTrigger: { trigger: '.contact-grid', start: 'top 82%', once: true },
-    x: -40, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.2
-  });
+  // ── Contact Cards & Map ──
+  ft('.contact-card', '.contact-info', { x: -40 }, { duration: 0.6, stagger: 0.12, ease: 'power2.out', scrollTrigger: { trigger: '.contact-info', start: 'top 82%', once: true } });
+  ft('.contact-map', '.contact-grid', { x: 40 }, { duration: 0.8, ease: 'power3.out', delay: 0.2, scrollTrigger: { trigger: '.contact-grid', start: 'top 82%', once: true } });
 
-  // ── CTA section ──
-  gsap.from('.cta-content > *', {
-    scrollTrigger: { trigger: '.cta-section', start: 'top 80%', once: true },
-    y: 40, opacity: 0, duration: 0.7,
-    stagger: 0.2, ease: 'power3.out'
-  });
+  // ── CTA ──
+  ft('.cta-content > *', '.cta-section', { y: 40 }, { duration: 0.7, stagger: 0.2, ease: 'power3.out', scrollTrigger: { trigger: '.cta-section', start: 'top 80%', once: true } });
 
   // ── Footer ──
-  gsap.from('.footer-grid > *', {
-    scrollTrigger: { trigger: '.footer-grid', start: 'top 90%', once: true },
-    y: 30, opacity: 0, duration: 0.6,
-    stagger: 0.12, ease: 'power2.out'
-  });
+  ft('.footer-grid > *', '.footer-grid', { y: 30 }, { duration: 0.6, stagger: 0.12, ease: 'power2.out', scrollTrigger: { trigger: '.footer-grid', start: 'top 90%', once: true } });
 
   // ── 3D Card Tilt ──
   document.querySelectorAll('.package-card, .testi-card, .service-detail-card').forEach(card => {

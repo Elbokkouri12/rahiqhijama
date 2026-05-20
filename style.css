@@ -1683,6 +1683,7 @@ input, textarea, select { font-family: var(--font-main); }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  align-items: start;
 }
 .testi-card {
   background: var(--white);

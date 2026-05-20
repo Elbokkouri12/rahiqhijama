@@ -260,7 +260,7 @@ function initAnimations() {
   ft('.package-card', '.packages-grid', { y: 100 }, { duration: 0.8, stagger: { each: 0.15, ease: 'power1.in' }, ease: 'power3.out', scrollTrigger: { trigger: '.packages-grid', start: 'top 82%', once: true } });
 
   // ── Service Detail Cards ──
-  ft('.service-detail-card', '.services-grid', { y: 60, scale: 0.92 }, { duration: 0.65, stagger: 0.12, ease: 'back.out(1.4)', scrollTrigger: { trigger: '.services-grid', start: 'top 82%', once: true } });
+  ft('.service-detail-card', '.services-grid', { y: 60 }, { duration: 0.65, stagger: 0.12, ease: 'back.out(1.4)', scrollTrigger: { trigger: '.services-grid', start: 'top 82%', once: true } });
 
   // ── How It Works Steps ──
   ft('.step-item', '.steps-grid', { y: 50 }, { duration: 0.6, stagger: 0.2, ease: 'power2.out', scrollTrigger: { trigger: '.steps-grid', start: 'top 80%', once: true } });

@@ -135,13 +135,24 @@ window.addEventListener('scroll', () => {
 
 // ========== GSAP ANIMATIONS ==========
 function initAnimations() {
-  // Fallback: اذا GSAP مش محمّل نستعمل CSS observer
   if (typeof gsap === 'undefined') {
     initCSSAnimations();
     return;
   }
 
   gsap.registerPlugin(ScrollTrigger);
+
+  // CSS animation classes set opacity:0 as default — remove them so GSAP reads
+  // the natural "to" state (opacity:1) correctly before applying its own from-tweens
+  document.querySelectorAll(
+    '.animate-fade-up, .reveal, .reveal-left, .reveal-right, .reveal-scale,' +
+    '.reveal-d1, .reveal-d2, .reveal-d3, .reveal-d4, .reveal-d5, .reveal-d6'
+  ).forEach(el => {
+    el.classList.remove(
+      'animate-fade-up', 'reveal', 'reveal-left', 'reveal-right', 'reveal-scale',
+      'reveal-d1', 'reveal-d2', 'reveal-d3', 'reveal-d4', 'reveal-d5', 'reveal-d6'
+    );
+  });
 
   // ── Hero Timeline ──
   const heroTl = gsap.timeline({ delay: 0.2 });

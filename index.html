@@ -6,7 +6,7 @@
 
   <!-- SEO Primary -->
   <title>رحيق الحجامة طنجة | Rahiq Hijama Tanger - حجز مواعيد الحجامة والمساج</title>
-  <meta name="description" content="مركز رحيق الحجامة في طنجة - خدمات الحجامة الطبية الدموية والجافة، المساج العلاجي والرياضي، الفوطة النارية. احجز موعدك أونلاين من الإثنين إلى الأحد 10ص - 6م. معتمد من أكاديميات دولية.">
+  <meta name="description" content="مركز رحيق الحجامة في طنجة - خدمات الحجامة الطبية الدموية والجافة، المساج العلاجي والرياضي، الفوطة النارية. احجز موعدك أونلاين من الإثنين إلى الأحد 10ص - 7م. معتمد من أكاديميات دولية.">
   <meta name="keywords" content="حجامة طنجة, hijama tanger, حجامة المغرب, cupping therapy maroc, مساج علاجي طنجة, رحيق الحجامة, hijama maroc, الحجامة الدموية, الحجامة الجافة, فوطة نارية طنجة, مساج رياضي طنجة, El Yazid Boudbouze">
   <meta name="author" content="Rahiq Hijama - El Yazid Boudbouze">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -36,6 +36,10 @@
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- GSAP Animation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
   <link rel="stylesheet" href="style.css">
 
   <!-- Structured Data -->
@@ -63,9 +67,27 @@
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday"],
         "opens": "10:00",
-        "closes": "18:00"
+        "closes": "19:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Friday"],
+        "opens": "15:00",
+        "closes": "19:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Saturday"],
+        "opens": "10:00",
+        "closes": "19:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Sunday"],
+        "opens": "10:00",
+        "closes": "15:00"
       }
     ],
     "priceRange": "100-200 MAD",
@@ -108,6 +130,13 @@
 </head>
 
 <body>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
   <!-- Loader -->
   <div id="loader" class="loader">
@@ -163,9 +192,9 @@
         <span>طب نبوي • علم حديث</span>
       </div>
       <h1 class="hero-title animate-fade-up delay-1">
-        رحيق <span class="text-gold">الحجامة</span>
-        <br>
-        <span class="hero-subtitle-line">شفاء حقيقي من قلب السنة</span>
+        <span class="hero-word word-1">رحيق</span>
+        <span class="text-gold hero-word word-2">الحجامة</span>
+        <span class="hero-subtitle-line hero-word word-3">شفاء حقيقي من قلب السنة</span>
       </h1>
       <p class="hero-desc animate-fade-up delay-2">
         مركز متخصص في الحجامة الطبية والمساج العلاجي بطنجة<br>
@@ -207,37 +236,40 @@
       <span>صوت</span>
     </button>
 
-    <!-- Floating elements -->
-    <div class="floating-cup cup1"><i class="fas fa-circle"></i></div>
-    <div class="floating-cup cup2"><i class="fas fa-circle"></i></div>
-    <div class="floating-cup cup3"><i class="fas fa-circle"></i></div>
-    <div class="floating-leaf leaf1">🌿</div>
-    <div class="floating-leaf leaf2">🌿</div>
+    <!-- Islamic Geometric SVG Pattern -->
+    <svg class="hero-geo-pattern" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <pattern id="geo" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+          <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="none" stroke="rgba(201,169,110,0.18)" stroke-width="0.8"/>
+          <polygon points="20,8 32,14 32,26 20,32 8,26 8,14" fill="none" stroke="rgba(201,169,110,0.10)" stroke-width="0.5"/>
+          <circle cx="20" cy="20" r="3" fill="none" stroke="rgba(201,169,110,0.15)" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#geo)"/>
+    </svg>
+
+    <!-- Decorative orbs -->
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+    <div class="hero-orb orb-3"></div>
   </section>
 
   <!-- ============ BENEFITS STRIP ============ -->
-  <section class="benefits-strip">
+  <section class="benefits-strip" aria-hidden="true">
     <div class="benefits-container">
-      <div class="benefit-item">
-        <i class="fas fa-certificate"></i>
-        <span>معتمد دولياً</span>
-      </div>
-      <div class="benefit-item">
-        <i class="fas fa-shield-heart"></i>
-        <span>آمن ومعقم 100%</span>
-      </div>
-      <div class="benefit-item">
-        <i class="fas fa-clock"></i>
-        <span>10 ص — 6 م يومياً</span>
-      </div>
-      <div class="benefit-item">
-        <i class="fas fa-location-dot"></i>
-        <span>طنجة - Tanger</span>
-      </div>
-      <div class="benefit-item">
-        <i class="fas fa-mobile-screen"></i>
-        <span>حجز أونلاين سهل</span>
-      </div>
+      <div class="benefit-item"><i class="fas fa-certificate"></i><span>معتمد دولياً</span></div>
+      <div class="benefit-item"><i class="fas fa-shield-heart"></i><span>آمن ومعقم 100%</span></div>
+      <div class="benefit-item"><i class="fas fa-clock"></i><span>10 ص — 7 م يومياً</span></div>
+      <div class="benefit-item"><i class="fas fa-location-dot"></i><span>طنجة - Tanger</span></div>
+      <div class="benefit-item"><i class="fas fa-mobile-screen"></i><span>حجز أونلاين سهل</span></div>
+      <div class="benefit-item"><i class="fas fa-star"></i><span>تقييم 4.9 / 5</span></div>
+      <!-- duplicate for infinite marquee -->
+      <div class="benefit-item"><i class="fas fa-certificate"></i><span>معتمد دولياً</span></div>
+      <div class="benefit-item"><i class="fas fa-shield-heart"></i><span>آمن ومعقم 100%</span></div>
+      <div class="benefit-item"><i class="fas fa-clock"></i><span>10 ص — 7 م يومياً</span></div>
+      <div class="benefit-item"><i class="fas fa-location-dot"></i><span>طنجة - Tanger</span></div>
+      <div class="benefit-item"><i class="fas fa-mobile-screen"></i><span>حجز أونلاين سهل</span></div>
+      <div class="benefit-item"><i class="fas fa-star"></i><span>تقييم 4.9 / 5</span></div>
     </div>
   </section>
 
@@ -245,7 +277,7 @@
   <section id="about" class="about section-padding">
     <div class="container">
       <div class="about-grid">
-        <div class="about-visual">
+        <div class="about-visual reveal-right">
           <div class="about-img-wrapper">
             <div class="about-img-frame">
               <div class="about-img-inner">
@@ -258,8 +290,9 @@
             </div>
           </div>
           <div class="about-pattern"></div>
+          <div class="about-pattern-2"></div>
         </div>
-        <div class="about-content">
+        <div class="about-content reveal-left">
           <div class="section-tag">من نحن</div>
           <h2 class="section-title">
             اليزيد بودبوز
@@ -312,7 +345,7 @@
       <div class="packages-grid">
 
         <!-- Pack 1 - باك العلاج -->
-        <div class="package-card" data-pack="1">
+        <div class="package-card reveal-scale reveal-d1" data-pack="1">
           <div class="pack-header pack-basic">
             <div class="pack-icon-wrap">
               <i class="fas fa-droplet"></i>
@@ -338,7 +371,7 @@
         </div>
 
         <!-- Pack 2 - باك الإسترخاء -->
-        <div class="package-card" data-pack="2">
+        <div class="package-card reveal-scale reveal-d2" data-pack="2">
           <div class="pack-header pack-standard">
             <div class="pack-icon-wrap">
               <i class="fas fa-fire-flame-curved"></i>
@@ -364,7 +397,7 @@
         </div>
 
         <!-- Pack 3 - باك الراحة (featured) -->
-        <div class="package-card featured" data-pack="3">
+        <div class="package-card featured reveal-scale reveal-d3" data-pack="3">
           <div class="pack-popular-ribbon">الأكثر طلباً</div>
           <div class="pack-header pack-premium">
             <div class="pack-icon-wrap">
@@ -393,7 +426,7 @@
         </div>
 
         <!-- Pack 4 - رحيق بيو VIP -->
-        <div class="package-card vip" data-pack="4">
+        <div class="package-card vip reveal-scale reveal-d4" data-pack="4">
           <div class="pack-header pack-vip">
             <div class="pack-icon-wrap">
               <i class="fas fa-gem"></i>
@@ -684,7 +717,7 @@
       <!-- Cards grid -->
       <div class="testi-grid">
 
-        <div class="testi-card">
+        <div class="testi-card reveal reveal-d1">
           <div class="testi-quote-icon">"</div>
           <div class="testi-stars-row">
             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -700,7 +733,7 @@
           </div>
         </div>
 
-        <div class="testi-card testi-card--featured">
+        <div class="testi-card testi-card--featured reveal reveal-d2">
           <div class="testi-quote-icon">"</div>
           <div class="testi-stars-row">
             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -790,7 +823,7 @@
       <div class="section-header light">
         <div class="section-tag">حجز موعد</div>
         <h2 class="section-title white">احجز موعدك الآن</h2>
-        <p class="section-desc light">اختر الباك والتاريخ والوقت المناسب لك — من الإثنين إلى الأحد 10:00 — 18:00</p>
+        <p class="section-desc light">اختر الباك والتاريخ والوقت المناسب لك — من الإثنين إلى الأحد 10:00 — 19:00</p>
       </div>
 
       <div class="booking-wrapper">
@@ -923,6 +956,8 @@
                   <button type="button" class="time-slot" data-time="15:00">03:00 م</button>
                   <button type="button" class="time-slot" data-time="16:00">04:00 م</button>
                   <button type="button" class="time-slot" data-time="17:00">05:00 م</button>
+                  <button type="button" class="time-slot" data-time="18:00">06:00 م</button>
+                  <button type="button" class="time-slot" data-time="19:00">07:00 م</button>
                 </div>
                 <input type="hidden" id="selectedTime" name="selectedTime">
               </div>
@@ -1142,7 +1177,7 @@
             <i class="fas fa-chevron-down"></i>
           </button>
           <div class="faq-answer">
-            <p>المركز مفتوح كل أيام الأسبوع من الإثنين إلى الأحد، من الساعة 10:00 صباحاً إلى 6:00 مساءً. يمكنك الحجز مباشرة عبر الموقع.</p>
+            <p>المركز مفتوح كل أيام الأسبوع. الإثنين إلى الخميس والسبت: 10:00 ص — 7:00 م. الجمعة: 3:00 م — 7:00 م. الأحد: 10:00 ص — 3:00 م. يمكنك الحجز مباشرة عبر الموقع.</p>
           </div>
         </div>
       </div>
@@ -1172,7 +1207,12 @@
             <i class="fas fa-clock"></i>
             <div>
               <h4>أوقات العمل</h4>
-              <p>الإثنين — الأحد<br>10:00 ص — 6:00 م</p>
+              <table class="hours-table">
+                <tr><td>الإثنين — الخميس</td><td>10:00 ص — 7:00 م</td></tr>
+                <tr><td>الجمعة</td><td>3:00 م — 7:00 م</td></tr>
+                <tr><td>السبت</td><td>10:00 ص — 7:00 م</td></tr>
+                <tr><td>الأحد</td><td>10:00 ص — 3:00 م</td></tr>
+              </table>
             </div>
           </div>
           <div class="contact-card">
@@ -1274,7 +1314,7 @@
           </div>
           <div class="footer-contact-item">
             <i class="fas fa-clock"></i>
-            <span>10:00 ص — 6:00 م | 7 أيام</span>
+            <span>10:00 ص — 7:00 م | 7 أيام</span>
           </div>
           <div class="footer-contact-item">
             <i class="fab fa-instagram"></i>
@@ -1291,9 +1331,13 @@
     </div>
   </footer>
 
-  <!-- Floating WhatsApp / Book Button -->
+  <!-- Floating Actions -->
   <div class="floating-action">
-    <a href="#booking" class="fab-book" title="احجز موعدك الآن">
+    <a href="https://wa.me/212XXXXXXXXX?text=مرحباً،%20أريد%20حجز%20موعد%20في%20مركز%20رحيق%20الحجامة" target="_blank" rel="noopener" class="fab-whatsapp" title="تواصل عبر واتساب" aria-label="واتساب">
+      <i class="fab fa-whatsapp"></i>
+      <span>واتساب</span>
+    </a>
+    <a href="#booking" class="fab-book" title="احجز موعدك الآن" aria-label="احجز موعدك">
       <i class="fas fa-calendar-plus"></i>
       <span>احجز الآن</span>
     </a>

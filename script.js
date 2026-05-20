@@ -7,13 +7,22 @@
 const BOOKING_API = 'https://script.google.com/macros/s/AKfycbyuHMcQv6VeEZDIi-8_Oguf9xPFXnDka-weTGxioRsKDgAi_LGvjvQHLRC287JLulYHnw/exec';
 
 // ========== LOADER ==========
-// DOMContentLoaded يشتغل فور اكتمال HTML — لا ينتظر الفيديوهات والصور
 document.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById('loader');
-  setTimeout(() => {
-    loader.classList.add('hidden');
-    initAnimations();
-  }, 300);
+
+  const hide = () => {
+    if (typeof gsap !== 'undefined') {
+      gsap.to(loader, {
+        opacity: 0, duration: 0.7, ease: 'power2.inOut',
+        onComplete: () => { loader.classList.add('hidden'); initAnimations(); }
+      });
+    } else {
+      loader.classList.add('hidden');
+      initAnimations();
+    }
+  };
+
+  setTimeout(hide, 350);
 });
 
 // ========== PARTICLES ==========
@@ -90,36 +99,333 @@ function updateActiveNav() {
   });
 }
 
-// ========== SCROLL ANIMATIONS ==========
+// ========== SCROLL PROGRESS BAR ==========
+const scrollProgressEl = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  if (!scrollProgressEl) return;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  scrollProgressEl.style.width = (window.scrollY / total * 100) + '%';
+}, { passive: true });
+
+// ========== CUSTOM CURSOR ==========
+(function() {
+  const dot  = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  if (!dot || !ring) return;
+
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  function animateCursor() {
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    dot.style.left  = mx + 'px';
+    dot.style.top   = my + 'px';
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  document.querySelectorAll('a, button, .package-card, .cert-photo-item').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
+  });
+})();
+
+// ========== GSAP ANIMATIONS ==========
 function initAnimations() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+  // Fallback: اذا GSAP مش محمّل نستعمل CSS observer
+  if (typeof gsap === 'undefined') {
+    initCSSAnimations();
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Hero Timeline ──
+  const heroTl = gsap.timeline({ delay: 0.2 });
+  heroTl
+    .from('.hero-badge', {
+      y: -50, opacity: 0, duration: 0.9, ease: 'back.out(2)'
+    })
+    .from('.hero-word.word-1', {
+      y: 80, opacity: 0, duration: 0.8, ease: 'power4.out'
+    }, '-=0.4')
+    .from('.hero-word.word-2', {
+      y: 80, opacity: 0, duration: 0.8, ease: 'power4.out'
+    }, '-=0.55')
+    .from('.hero-word.word-3', {
+      y: 40, opacity: 0, duration: 0.7, ease: 'power3.out'
+    }, '-=0.45')
+    .from('.hero-desc', {
+      y: 30, opacity: 0, duration: 0.7, ease: 'power2.out'
+    }, '-=0.4')
+    .from('.hero-stats', {
+      scale: 0.75, opacity: 0, duration: 0.8, ease: 'back.out(1.8)'
+    }, '-=0.35')
+    .from('.hero-cta .btn-primary', {
+      x: 40, opacity: 0, duration: 0.6, ease: 'power3.out'
+    }, '-=0.4')
+    .from('.hero-cta .btn-secondary', {
+      x: -40, opacity: 0, duration: 0.6, ease: 'power3.out'
+    }, '-=0.5')
+    .from('.hero-scroll-indicator', {
+      y: 20, opacity: 0, duration: 0.6
+    }, '-=0.2');
+
+  // ── Hero Parallax (video) ──
+  gsap.to('.hero-bg-video', {
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1.5
+    },
+    y: '28%',
+    ease: 'none'
+  });
+
+  // ── Hero orbs parallax ──
+  gsap.to('.orb-1', {
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 2 },
+    y: -120, ease: 'none'
+  });
+  gsap.to('.orb-2', {
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 3 },
+    y: -80, ease: 'none'
+  });
+
+  // ── Stats counter with GSAP ──
+  ScrollTrigger.create({
+    trigger: '.hero-stats',
+    start: 'top 88%',
+    once: true,
+    onEnter: () => {
+      document.querySelectorAll('.stat-number').forEach(el => {
+        const text = el.textContent;
+        const match = text.match(/\d+/);
+        if (!match) return;
+        const target = parseInt(match[0]);
+        const prefix = text.slice(0, text.indexOf(match[0]));
+        const suffix = text.slice(text.indexOf(match[0]) + match[0].length);
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: target, duration: 2.2, ease: 'power2.out',
+          onUpdate: () => { el.textContent = prefix + Math.round(obj.val) + suffix; }
+        });
+      });
+    }
+  });
+
+  // ── Section Headers ──
+  gsap.utils.toArray('.section-header').forEach(header => {
+    gsap.from(header, {
+      scrollTrigger: { trigger: header, start: 'top 88%', once: true },
+      y: 60, opacity: 0, duration: 0.9, ease: 'power3.out'
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+  });
 
-  document.querySelectorAll('.animate-fade-up, .reveal').forEach(el => observer.observe(el));
+  // ── About Section ──
+  gsap.from('.about-visual', {
+    scrollTrigger: { trigger: '.about-grid', start: 'top 78%', once: true },
+    x: 80, opacity: 0, duration: 1.1, ease: 'power4.out'
+  });
+  gsap.from('.about-content', {
+    scrollTrigger: { trigger: '.about-grid', start: 'top 78%', once: true },
+    x: -80, opacity: 0, duration: 1.1, ease: 'power4.out', delay: 0.2
+  });
+  gsap.from('.feature-item', {
+    scrollTrigger: { trigger: '.about-features', start: 'top 85%', once: true },
+    x: -30, opacity: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out'
+  });
 
-  // Add reveal class to section children
-  const revealTargets = document.querySelectorAll(
-    '.package-card, .cert-card, .service-detail-card, .step-item, .faq-item, .contact-card, .about-content'
-  );
-  revealTargets.forEach((el, i) => {
-    el.classList.add('reveal');
-    el.style.transitionDelay = `${(i % 4) * 0.1}s`;
-    observer.observe(el);
+  // ── Package Cards — stagger from below ──
+  gsap.from('.package-card', {
+    scrollTrigger: { trigger: '.packages-grid', start: 'top 82%', once: true },
+    y: 100, opacity: 0, duration: 0.8,
+    stagger: { each: 0.15, ease: 'power1.in' },
+    ease: 'power3.out'
+  });
+
+  // ── Service Detail Cards ──
+  gsap.from('.service-detail-card', {
+    scrollTrigger: { trigger: '.services-grid', start: 'top 82%', once: true },
+    y: 60, opacity: 0, scale: 0.92, duration: 0.65,
+    stagger: 0.12, ease: 'back.out(1.4)'
+  });
+
+  // ── How It Works Steps ──
+  gsap.from('.step-item', {
+    scrollTrigger: { trigger: '.steps-grid', start: 'top 80%', once: true },
+    y: 50, opacity: 0, duration: 0.6,
+    stagger: 0.2, ease: 'power2.out'
+  });
+
+  // ── Medical Card ──
+  gsap.from('.medical-card', {
+    scrollTrigger: { trigger: '.medical-card', start: 'top 82%', once: true },
+    y: 50, opacity: 0, scale: 0.96, duration: 0.9, ease: 'power3.out'
+  });
+
+  // ── Reel Cards ──
+  gsap.from('.reel-card', {
+    scrollTrigger: { trigger: '.reels-grid', start: 'top 82%', once: true },
+    scale: 0.7, opacity: 0, duration: 0.7,
+    stagger: 0.15, ease: 'back.out(1.6)'
+  });
+
+  // ── Certifications — diagonal cascade ──
+  gsap.from('.cert-photo-item', {
+    scrollTrigger: { trigger: '.cert-photos-grid', start: 'top 80%', once: true },
+    y: 70, opacity: 0, rotation: 4, duration: 0.7,
+    stagger: { each: 0.1, from: 'start' },
+    ease: 'back.out(1.3)'
+  });
+
+  // ── Testimonials — alternating ──
+  gsap.utils.toArray('.testi-card').forEach((card, i) => {
+    gsap.from(card, {
+      scrollTrigger: { trigger: card, start: 'top 88%', once: true },
+      x: i % 2 === 0 ? -60 : 60,
+      opacity: 0, duration: 0.8,
+      delay: (i % 3) * 0.1,
+      ease: 'power3.out'
+    });
+  });
+
+  // ── Testi stats ──
+  gsap.from('.testi-stat', {
+    scrollTrigger: { trigger: '.testi-stats', start: 'top 85%', once: true },
+    scale: 0.7, opacity: 0, duration: 0.6, stagger: 0.15, ease: 'back.out(2)'
+  });
+
+  // ── FAQ items ──
+  gsap.from('.faq-item', {
+    scrollTrigger: { trigger: '.faq-list', start: 'top 82%', once: true },
+    x: 50, opacity: 0, duration: 0.5,
+    stagger: 0.1, ease: 'power2.out'
+  });
+
+  // ── Contact cards ──
+  gsap.from('.contact-card', {
+    scrollTrigger: { trigger: '.contact-grid', start: 'top 82%', once: true },
+    x: 40, opacity: 0, duration: 0.6,
+    stagger: 0.12, ease: 'power2.out'
+  });
+  gsap.from('.contact-map', {
+    scrollTrigger: { trigger: '.contact-grid', start: 'top 82%', once: true },
+    x: -40, opacity: 0, duration: 0.8, ease: 'power3.out', delay: 0.2
+  });
+
+  // ── CTA section ──
+  gsap.from('.cta-content > *', {
+    scrollTrigger: { trigger: '.cta-section', start: 'top 80%', once: true },
+    y: 40, opacity: 0, duration: 0.7,
+    stagger: 0.2, ease: 'power3.out'
+  });
+
+  // ── Footer ──
+  gsap.from('.footer-grid > *', {
+    scrollTrigger: { trigger: '.footer-grid', start: 'top 90%', once: true },
+    y: 30, opacity: 0, duration: 0.6,
+    stagger: 0.12, ease: 'power2.out'
+  });
+
+  // ── 3D Card Tilt ──
+  document.querySelectorAll('.package-card, .testi-card, .service-detail-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2, cy = rect.height / 2;
+      const rx = (y - cy) / cy * -7;
+      const ry = (x - cx) / cx * 7;
+      gsap.to(card, {
+        rotationX: rx, rotationY: ry, duration: 0.35,
+        ease: 'power1.out', transformPerspective: 900,
+        boxShadow: `${-ry * 2}px ${rx * 2}px 40px rgba(10,31,18,0.20)`
+      });
+    });
+    card.addEventListener('mouseleave', () => {
+      gsap.to(card, {
+        rotationX: 0, rotationY: 0, duration: 0.7,
+        ease: 'elastic.out(1, 0.5)',
+        boxShadow: '0 4px 16px rgba(10,31,18,0.12)'
+      });
+    });
+  });
+
+  // ── Magnetic Buttons ──
+  document.querySelectorAll('.btn-primary, .btn-cta, .btn-book-nav, .fab-book').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      gsap.to(btn, {
+        x: x * 0.35, y: y * 0.35,
+        duration: 0.3, ease: 'power2.out'
+      });
+    });
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
+    });
+  });
+
+  // ── Section number counter (testi stats) ──
+  ScrollTrigger.create({
+    trigger: '.testi-stats',
+    start: 'top 88%',
+    once: true,
+    onEnter: () => {
+      document.querySelectorAll('.testi-stat-num').forEach(el => {
+        const text = el.textContent;
+        const match = text.match(/[\d.]+/);
+        if (!match) return;
+        const target = parseFloat(match[0]);
+        const prefix = text.slice(0, text.indexOf(match[0]));
+        const suffix = text.slice(text.indexOf(match[0]) + match[0].length);
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: target, duration: 1.8, ease: 'power2.out',
+          onUpdate: () => {
+            el.textContent = prefix + (Number.isInteger(target) ? Math.round(obj.val) : obj.val.toFixed(1)) + suffix;
+          }
+        });
+      });
+    }
   });
 }
 
-// ========== HERO ANIMATIONS — ALREADY VISIBLE ==========
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    document.querySelectorAll('.animate-fade-up').forEach(el => {
-      el.classList.add('visible');
+// ========== CSS FALLBACK ANIMATIONS ==========
+function initCSSAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
-  }, 1300);
+  }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll(
+    '.animate-fade-up, .reveal, .reveal-left, .reveal-right, .reveal-scale'
+  ).forEach(el => observer.observe(el));
+
+  const auto = ['.service-detail-card','.step-item','.faq-item','.contact-card','.cert-photo-item','.testi-stat'];
+  document.querySelectorAll(auto.join(', ')).forEach((el, i) => {
+    if (!el.classList.contains('reveal') && !el.classList.contains('reveal-scale')) {
+      el.classList.add('reveal');
+      el.style.transitionDelay = `${(i % 5) * 0.1}s`;
+      observer.observe(el);
+    }
+  });
+}
+
+// ========== HERO ANIMATIONS — visible immediately ==========
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof gsap === 'undefined') {
+    setTimeout(() => {
+      document.querySelectorAll('.animate-fade-up').forEach(el => el.classList.add('visible'));
+    }, 800);
+  }
 });
 
 // ========== DATE SETUP ==========
@@ -137,6 +443,17 @@ if (dateInput) {
   dateInput.addEventListener('change', checkTimeSlots);
 }
 
+// Working hours per day-of-week (0=Sun, 1=Mon, ..., 6=Sat)
+const DAY_HOURS = {
+  0: { start: 10, end: 15 }, // الأحد
+  1: { start: 10, end: 19 }, // الإثنين
+  2: { start: 10, end: 19 }, // الثلاثاء
+  3: { start: 10, end: 19 }, // الأربعاء
+  4: { start: 10, end: 19 }, // الخميس
+  5: { start: 15, end: 19 }, // الجمعة
+  6: { start: 10, end: 19 }, // السبت
+};
+
 async function checkTimeSlots() {
   const dateVal = dateInput.value;
   if (!dateVal) return;
@@ -145,11 +462,16 @@ async function checkTimeSlots() {
 
   // Reset + show loading
   slots.forEach(s => {
-    s.classList.remove('booked', 'selected');
+    s.classList.remove('booked', 'selected', 'outside-hours');
     s.disabled = true;
     s.classList.add('loading');
   });
   document.getElementById('selectedTime').value = '';
+
+  // Determine which slots are outside this day's working hours
+  const [y, m, d] = dateVal.split('-').map(Number);
+  const dayOfWeek = new Date(y, m - 1, d).getDay();
+  const { start, end } = DAY_HOURS[dayOfWeek];
 
   let booked = [];
 
@@ -167,7 +489,11 @@ async function checkTimeSlots() {
 
   slots.forEach(slot => {
     slot.classList.remove('loading');
-    if (booked.includes(slot.dataset.time)) {
+    const hour = parseInt(slot.dataset.time.split(':')[0], 10);
+    if (hour < start || hour > end) {
+      slot.classList.add('outside-hours');
+      slot.disabled = true;
+    } else if (booked.includes(slot.dataset.time)) {
       slot.classList.add('booked');
       slot.disabled = true;
     } else {
@@ -500,34 +826,33 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ========== STATS COUNTER ANIMATION ==========
+// Counter animation (CSS fallback when GSAP not available)
 function animateCounters() {
-  document.querySelectorAll('.stat-number').forEach(el => {
+  if (typeof gsap !== 'undefined') return; // GSAP handles it
+  document.querySelectorAll('.stat-number, .testi-stat-num').forEach(el => {
     const text = el.textContent;
-    const match = text.match(/\d+/);
+    const match = text.match(/[\d.]+/);
     if (!match) return;
-    const target = parseInt(match[0]);
+    const target = parseFloat(match[0]);
     const prefix = text.slice(0, text.indexOf(match[0]));
     const suffix = text.slice(text.indexOf(match[0]) + match[0].length);
     let current = 0;
     const increment = target / 50;
     const timer = setInterval(() => {
       current = Math.min(current + increment, target);
-      el.textContent = prefix + Math.floor(current) + suffix;
+      el.textContent = prefix + (Number.isInteger(target) ? Math.floor(current) : current.toFixed(1)) + suffix;
       if (current >= target) clearInterval(timer);
     }, 30);
   });
 }
 
-const heroObserver = new IntersectionObserver((entries) => {
-  if (entries[0].isIntersecting) {
-    setTimeout(animateCounters, 400);
-    heroObserver.disconnect();
-  }
-}, { threshold: 0.5 });
-
 const heroSection = document.getElementById('hero');
-if (heroSection) heroObserver.observe(heroSection);
+if (heroSection) {
+  const heroObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) { setTimeout(animateCounters, 400); heroObserver.disconnect(); }
+  }, { threshold: 0.4 });
+  heroObserver.observe(heroSection);
+}
 
 // Certificate slider
 (function() {

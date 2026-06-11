@@ -375,8 +375,8 @@ input, textarea, select { font-family: var(--font-main); }
   object-fit: cover;
   object-position: center;
   z-index: 0;
-  opacity: 0.40;
-  filter: saturate(0.6) brightness(0.55);
+  opacity: 0.72;
+  filter: saturate(0.85) brightness(0.80);
   will-change: transform;
 }
 
@@ -387,9 +387,9 @@ input, textarea, select { font-family: var(--font-main); }
   z-index: 1;
   background:
     linear-gradient(160deg,
-      rgba(7,26,16,0.82) 0%,
-      rgba(15,50,28,0.60) 40%,
-      rgba(7,26,16,0.85) 100%
+      rgba(7,26,16,0.60) 0%,
+      rgba(15,50,28,0.38) 40%,
+      rgba(7,26,16,0.65) 100%
     );
   animation: hero-overlay-pulse 8s ease-in-out infinite alternate;
 }
@@ -2875,7 +2875,7 @@ input, textarea, select { font-family: var(--font-main); }
 
   /* ── Hero ── */
   .hero { padding: 62px 20px 28px; min-height: 88svh; align-items: center; }
-  .hero-bg-video { opacity: 0.6; filter: saturate(0.8) brightness(0.75); }
+  .hero-bg-video { opacity: 0.82; filter: saturate(0.9) brightness(0.85); }
   .hero-title { font-size: clamp(2.4rem, 9vw, 3.4rem); margin-bottom: 16px; }
   .hero-desc { font-size: 1rem; margin-bottom: 28px; line-height: 1.7; }
   .hero-badge {

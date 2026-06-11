@@ -792,6 +792,43 @@ input, textarea, select { font-family: var(--font-main); }
 .section-title.white::after { background: linear-gradient(90deg, var(--gold), rgba(201,169,110,0.3)); }
 .section-desc.light { color: rgba(255,255,255,0.65); }
 
+/* ========== SESSION PREVIEW ========== */
+.session-preview {
+  background: var(--off-white);
+  padding: 60px 0 52px;
+  text-align: center;
+}
+.sp-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+.sp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: rgba(27,94,53,0.07);
+  border: 1px solid rgba(27,94,53,0.18);
+  padding: 8px 24px;
+  border-radius: var(--radius-full);
+}
+.sp-tag i { color: var(--gold); font-size: 1.2rem; }
+.sp-card {
+  width: 260px !important;
+  height: 440px !important;
+  border-radius: 28px !important;
+  box-shadow: 0 20px 60px rgba(10,31,18,0.22), 0 0 0 1px rgba(201,169,110,0.15) !important;
+}
+.sp-caption {
+  color: var(--text-light);
+  font-size: 0.88rem;
+  max-width: 300px;
+}
+
 /* ========== CLIP-PATH SECTION DIVIDERS ========== */
 .benefits-strip {
   clip-path: none;
@@ -2750,6 +2787,9 @@ input, textarea, select { font-family: var(--font-main); }
   .container { padding: 0 18px; }
   /* Benefits marquee */
   .benefits-container { animation-duration: 18s; }
+  /* Session preview */
+  .session-preview { padding: 40px 0 32px; }
+  .sp-card { width: 220px !important; height: 380px !important; }
   /* Floating action stack */
   .floating-action { bottom: 20px; left: 16px; gap: 10px; }
   .fab-whatsapp { padding: 11px 14px; font-size: 0.82rem; }
@@ -2999,6 +3039,10 @@ input, textarea, select { font-family: var(--font-main); }
   .section-padding { padding: 36px 0; }
   .section-header { margin-bottom: 24px; }
   .container { padding: 0 14px; }
+
+  /* ── Preview video ── */
+  .session-preview { padding: 28px 0 24px; }
+  .sp-card { width: 185px !important; height: 320px !important; border-radius: 20px !important; }
 
   /* ── Navbar ── */
   .navbar { padding: 5px 0; }

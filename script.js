@@ -25,6 +25,49 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(hide, 100);
 });
 
+// ========== BENEFITS MARQUEE ==========
+(function () {
+  const container = document.querySelector('.benefits-container');
+  if (!container) return;
+
+  const originals = [...container.children];
+
+  function startMarquee() {
+    // Clone until total width > 4× viewport
+    while (container.scrollWidth < window.innerWidth * 4) {
+      originals.forEach(el => container.appendChild(el.cloneNode(true)));
+    }
+
+    // Measure exact width of ONE original set
+    let setWidth = 0;
+    originals.forEach(el => { setWidth += el.getBoundingClientRect().width; });
+    if (setWidth <= 0) return;
+
+    const SPEED = window.innerWidth < 768 ? 35 : 50; // px/sec
+    let x = 0;
+    let lastTime = null;
+
+    function tick(now) {
+      if (lastTime !== null) {
+        const dt = Math.min(now - lastTime, 100);
+        x -= SPEED * dt / 1000;
+        if (x <= -setWidth) x += setWidth;
+        container.style.transform = 'translateX(' + x + 'px)';
+      }
+      lastTime = now;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Wait for Font Awesome icons to load before measuring
+  if (document.readyState === 'complete') {
+    startMarquee();
+  } else {
+    window.addEventListener('load', startMarquee, { once: true });
+  }
+})();
+
 // ========== PARTICLES ==========
 function createParticles() {
   const container = document.getElementById('particles');

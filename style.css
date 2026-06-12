@@ -670,6 +670,7 @@ input, textarea, select { font-family: var(--font-main); }
   overflow: hidden;
   border-top: 1px solid rgba(201,169,110,0.15);
   border-bottom: 1px solid rgba(201,169,110,0.15);
+  direction: ltr;
 }
 .benefits-strip::before,
 .benefits-strip::after {
@@ -689,22 +690,8 @@ input, textarea, select { font-family: var(--font-main); }
   gap: 0;
   width: max-content;
   direction: ltr;
-  animation: marquee-rtl 28s linear infinite;
-  -webkit-animation: marquee-rtl 28s linear infinite;
   padding: 18px 0;
   will-change: transform;
-}
-@keyframes marquee-rtl {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-25%); }
-}
-@-webkit-keyframes marquee-rtl {
-  0%   { -webkit-transform: translateX(0); }
-  100% { -webkit-transform: translateX(-25%); }
-}
-.benefits-strip:hover .benefits-container {
-  animation-play-state: paused;
-  -webkit-animation-play-state: paused;
 }
 
 .benefit-item {
@@ -2793,8 +2780,7 @@ input, textarea, select { font-family: var(--font-main); }
   .section-padding { padding: 48px 0; }
   .section-header { margin-bottom: 36px; }
   .container { padding: 0 18px; }
-  /* Benefits marquee */
-  .benefits-container { animation-duration: 18s; }
+  /* Benefits marquee — speed controlled by JS */
   /* Session preview */
   .session-preview { padding: 40px 0 32px; }
   .sp-card { width: 220px !important; height: 380px !important; }
@@ -3138,8 +3124,6 @@ input, textarea, select { font-family: var(--font-main); }
   .benefits-container {
     display: flex !important;
     width: max-content !important;
-    animation: marquee-rtl 14s linear infinite !important;
-    -webkit-animation: marquee-rtl 14s linear infinite !important;
     padding: 14px 0;
   }
   .benefit-item { font-size: 0.78rem; gap: 7px; white-space: nowrap; }

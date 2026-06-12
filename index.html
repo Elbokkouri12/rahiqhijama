@@ -129,6 +129,24 @@
     ]
   }
   </script>
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '2953568854845937');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=2953568854845937&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
 </head>
 
 <body>
@@ -1329,5 +1347,46 @@
   </div>
 
   <script src="script.js?v=2026061203"></script>
+
+  <!-- Facebook Pixel Custom Events -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // InitiateCheckout on all booking buttons
+    document.querySelectorAll('.btn-book-nav, .btn-primary, .btn-book-pack').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'InitiateCheckout');
+        }
+      });
+    });
+
+    // ViewContent when clicking pack/service cards
+    document.querySelectorAll('[data-pack]').forEach(function(card) {
+      card.addEventListener('click', function() {
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'ViewContent', {
+            content_name: this.getAttribute('data-pack-name') || this.getAttribute('data-pack'),
+            content_type: 'product'
+          });
+        }
+      });
+    });
+
+    // Schedule event when booking confirmation is shown
+    var confirmEl = document.getElementById('confirmationSummary');
+    if (confirmEl) {
+      new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          var t = m.target;
+          var visible = t.style.display !== 'none' && !t.classList.contains('hidden');
+          if (visible && typeof fbq !== 'undefined') {
+            fbq('track', 'Schedule');
+          }
+        });
+      }).observe(confirmEl, { attributes: true, attributeFilter: ['class', 'style'] });
+    }
+  });
+  </script>
+  <!-- End Facebook Pixel Custom Events -->
 </body>
 </html>

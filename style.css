@@ -426,6 +426,14 @@ input, textarea, select { font-family: var(--font-main); }
 .hero-word {
   display: inline-block;
   overflow: hidden;
+  will-change: transform, opacity;
+}
+.hero-badge,
+.hero-desc,
+.hero-stats,
+.hero-cta .btn-primary,
+.hero-cta .btn-secondary {
+  will-change: transform, opacity;
 }
 .hero-word.word-1 { display: block; }
 .hero-word.word-2 { display: inline-block; }

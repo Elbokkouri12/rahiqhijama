@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hide = () => {
     if (typeof gsap !== 'undefined') {
       gsap.to(loader, {
-        opacity: 0, duration: 0.7, ease: 'power2.inOut',
+        opacity: 0, duration: 0.35, ease: 'power2.inOut',
         onComplete: () => { loader.classList.add('hidden'); initAnimations(); }
       });
     } else {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  setTimeout(hide, 350);
+  setTimeout(hide, 100);
 });
 
 // ========== PARTICLES ==========
@@ -30,7 +30,7 @@ function createParticles() {
   const container = document.getElementById('particles');
   if (!container) return;
   // صفر على الهاتف لتوفير الأداء
-  const count = window.innerWidth < 768 ? 0 : 20;
+  const count = window.innerWidth < 768 ? 0 : 12;
   for (let i = 0; i < count; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
@@ -966,15 +966,6 @@ document.addEventListener('visibilitychange', () => {
   vid.addEventListener('loadedmetadata', () => {
     vid.currentTime = VIDEO_START;
     vid.play().catch(() => {});
-  });
-
-  // بدء تحميل الفيديو فور اكتمال HTML — لا ينتظر الـ load event
-  document.addEventListener('DOMContentLoaded', () => {
-    if (!vid.getAttribute('src')) {
-      const source = vid.querySelector('source');
-      if (source) vid.setAttribute('src', source.getAttribute('src'));
-    }
-    vid.load();
   });
 
   // throttle timeupdate — فحص 4 مرات/ثانية بدل 30

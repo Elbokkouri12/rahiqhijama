@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- SEO Primary -->
-  <title>رحيق الحجامة طنجة | Rahiq Hijama Tanger - حجز مواعيد الحجامة والمساج</title>
+  <title>رحيق الحجامة طنجة | Rahiq Hijama Taner - حجز مواعيد الحجامة والمساج</title>
   <meta name="description" content="مركز رحيق الحجامة في طنجة - خدمات الحجامة الطبية الدموية والجافة، المساج العلاجي والرياضي، الفوطة النارية. احجز موعدك أونلاين من الإثنين إلى الأحد 10ص - 7م. معتمد من أكاديميات دولية.">
   <meta name="keywords" content="حجامة طنجة, hijama tanger, حجامة المغرب, cupping therapy maroc, مساج علاجي طنجة, رحيق الحجامة, hijama maroc, الحجامة الدموية, الحجامة الجافة, فوطة نارية طنجة, مساج رياضي طنجة, El Yazid Boudbouze">
   <meta name="author" content="Rahiq Hijama - El Yazid Boudbouze">
@@ -1352,7 +1352,7 @@
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     // InitiateCheckout on all booking buttons
-    document.querySelectorAll('.btn-book-nav, .btn-primary, .btn-book-pack').forEach(function(btn) {
+    document.querySelectorAll('.btn-book-nav, .btn-book-pack, .btn-submit').forEach(function(btn) {
       btn.addEventListener('click', function() {
         if (typeof fbq !== 'undefined') {
           fbq('track', 'InitiateCheckout');
@@ -1373,7 +1373,7 @@
     });
 
     // Schedule event when booking confirmation is shown
-    var confirmEl = document.getElementById('confirmationSummary');
+    var confirmEl = document.getElementById('bookingSuccess');
     if (confirmEl) {
       new MutationObserver(function(mutations) {
         mutations.forEach(function(m) {

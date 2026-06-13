@@ -445,16 +445,29 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ========== DATE SETUP ==========
+function localDateStr(date) {
+  return date.getFullYear() + '-' +
+    String(date.getMonth() + 1).padStart(2, '0') + '-' +
+    String(date.getDate()).padStart(2, '0');
+}
+
 const dateInput = document.getElementById('bookingDate');
 if (dateInput) {
-  const today = new Date();
-  const minDate = new Date(today);
-  minDate.setDate(today.getDate() + 1);
-  dateInput.min = minDate.toISOString().split('T')[0];
+  const now = new Date();
+  const todayDay = now.getDay();
+  const todayHours = { 0:{start:10,end:15},1:{start:10,end:19},2:{start:10,end:19},3:{start:10,end:19},4:{start:10,end:19},5:{start:15,end:19},6:{start:10,end:19} }[todayDay];
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
-  const maxDate = new Date(today);
-  maxDate.setDate(today.getDate() + 60);
-  dateInput.max = maxDate.toISOString().split('T')[0];
+  // Allow today if at least one slot remains (>30 min before closing)
+  const todayStillOpen = nowMinutes < (todayHours.end * 60 - 30);
+
+  const minDate = new Date(now);
+  if (!todayStillOpen) minDate.setDate(now.getDate() + 1);
+  dateInput.min = localDateStr(minDate);
+
+  const maxDate = new Date(now);
+  maxDate.setDate(now.getDate() + 60);
+  dateInput.max = localDateStr(maxDate);
 
   dateInput.addEventListener('change', checkTimeSlots);
 }
@@ -489,6 +502,12 @@ async function checkTimeSlots() {
   const dayOfWeek = new Date(y, m - 1, d).getDay();
   const { start, end } = DAY_HOURS[dayOfWeek];
 
+  // Check if selected date is today — disable past slots
+  const nowForSlots = new Date();
+  const todayStr = localDateStr(nowForSlots);
+  const isToday = dateVal === todayStr;
+  const nowTotalMinutes = nowForSlots.getHours() * 60 + nowForSlots.getMinutes();
+
   let booked = [];
 
   if (BOOKING_API) {
@@ -506,7 +525,14 @@ async function checkTimeSlots() {
   slots.forEach(slot => {
     slot.classList.remove('loading');
     const hour = parseInt(slot.dataset.time.split(':')[0], 10);
+    const slotMinutes = hour * 60;
+
     if (hour < start || hour > end) {
+      // Outside working hours for this day
+      slot.classList.add('outside-hours');
+      slot.disabled = true;
+    } else if (isToday && slotMinutes <= nowTotalMinutes + 30) {
+      // Today: slot already passed or less than 30 min away
       slot.classList.add('outside-hours');
       slot.disabled = true;
     } else if (booked.includes(slot.dataset.time)) {

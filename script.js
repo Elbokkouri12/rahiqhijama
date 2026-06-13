@@ -150,7 +150,7 @@ window.addEventListener('scroll', () => {
   progressTicking = true;
   requestAnimationFrame(() => {
     const total = document.documentElement.scrollHeight - window.innerHeight;
-    scrollProgressEl.style.width = (window.scrollY / total * 100) + '%';
+    scrollProgressEl.style.width = (total > 0 ? window.scrollY / total * 100 : 0) + '%';
     progressTicking = false;
   });
 }, { passive: true });
@@ -552,7 +552,7 @@ function getLocalBookedSlots(dateStr) {
 // ========== TIME SLOTS ==========
 document.querySelectorAll('.time-slot').forEach(slot => {
   slot.addEventListener('click', () => {
-    if (slot.classList.contains('booked')) return;
+    if (slot.classList.contains('booked') || slot.classList.contains('outside-hours') || slot.disabled) return;
     document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
     slot.classList.add('selected');
     document.getElementById('selectedTime').value = slot.dataset.time;
@@ -607,9 +607,15 @@ function prevStep(step) {
 }
 
 function goToStep(step) {
+  const goingBack = step < currentStep;
   document.getElementById(`form-step-${currentStep}`).classList.remove('active');
   document.getElementById(`step-indicator-${currentStep}`).classList.remove('active');
-  document.getElementById(`step-indicator-${currentStep}`).classList.add('completed');
+  // Only mark as completed when moving forward
+  if (!goingBack) {
+    document.getElementById(`step-indicator-${currentStep}`).classList.add('completed');
+  } else {
+    document.getElementById(`step-indicator-${currentStep}`).classList.remove('completed');
+  }
 
   currentStep = step;
   document.getElementById(`form-step-${currentStep}`).classList.add('active');
@@ -689,6 +695,10 @@ function checkMedicalWarning() {
   });
 });
 
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function buildSummary() {
   const packVal = document.querySelector('input[name="selectedPack"]:checked')?.value;
   const date = document.getElementById('bookingDate').value;
@@ -696,16 +706,17 @@ function buildSummary() {
   const name = document.getElementById('clientName').value;
   const phone = document.getElementById('clientPhone').value;
 
-  const dateFormatted = date ? new Date(date).toLocaleDateString('ar-MA', {
+  const [y, m, d] = (date || '').split('-').map(Number);
+  const dateFormatted = date ? new Date(y, m - 1, d).toLocaleDateString('ar-MA', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   }) : '';
 
   const rows = [
-    { label: 'الاسم', value: name },
-    { label: 'الهاتف', value: phone },
-    { label: 'الباك المختار', value: PACK_NAMES[packVal] || '', highlight: true },
-    { label: 'التاريخ', value: dateFormatted },
-    { label: 'الوقت', value: formatTime(time) },
+    { label: 'الاسم', value: escapeHtml(name) },
+    { label: 'الهاتف', value: escapeHtml(phone) },
+    { label: 'الباك المختار', value: escapeHtml(PACK_NAMES[packVal] || ''), highlight: true },
+    { label: 'التاريخ', value: escapeHtml(dateFormatted) },
+    { label: 'الوقت', value: escapeHtml(formatTime(time)) },
   ];
 
   const container = document.getElementById('confirmationSummary');
@@ -741,11 +752,17 @@ async function submitBooking() {
     return;
   }
 
+  // Prevent double submission
+  const submitBtn = document.querySelector('.btn-submit');
+  if (submitBtn && submitBtn.disabled) return;
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'جاري الإرسال...'; }
+
   const packVal = document.querySelector('input[name="selectedPack"]:checked')?.value;
   const date    = document.getElementById('bookingDate').value;
   const time    = document.getElementById('selectedTime').value;
   const name    = document.getElementById('clientName').value;
   const phone   = document.getElementById('clientPhone').value;
+  const notes   = document.getElementById('clientNotes')?.value || '';
   const tension = document.querySelector('input[name="q_tension"]:checked')?.value || '-';
   const sugar   = document.querySelector('input[name="q_sugar"]:checked')?.value   || '-';
   const heart   = document.querySelector('input[name="q_heart"]:checked')?.value   || '-';
@@ -755,7 +772,7 @@ async function submitBooking() {
     id: Date.now(),
     pack: PACK_NAMES[packVal],
     price: PACK_PRICES[packVal],
-    date, time, name, phone,
+    date, time, name, phone, notes,
     createdAt: new Date().toISOString(),
     medical: { tension, sugar, heart, meds }
   };
@@ -771,10 +788,12 @@ async function submitBooking() {
       action: 'book', name, phone, date, time,
       pack: PACK_NAMES[packVal],
       price: PACK_PRICES[packVal],
-      tension, sugar, heart, meds
+      notes, tension, sugar, heart, meds
     });
     fetch(`${BOOKING_API}?${params}`).catch(() => {});
   }
+
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'تأكيد الحجز'; }
 
   // Show success
   const formEl    = document.getElementById('bookingForm');
@@ -814,6 +833,8 @@ function resetBooking() {
   document.querySelectorAll('.pack-select-card').forEach(c => c.classList.remove('selected'));
   document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
   document.querySelectorAll('.step-line').forEach(l => l.classList.remove('completed'));
+  const mwarn = document.getElementById('mq-warning');
+  if (mwarn) mwarn.style.display = 'none';
 }
 
 // ========== FAQ ==========
@@ -1021,7 +1042,7 @@ document.addEventListener('visibilitychange', () => {
 // ========== HERO VIDEO — mid-speech loop + sound toggle ==========
 (function () {
   const VIDEO_START = 0;
-  const VIDEO_END   = 46;
+  let VIDEO_END = Infinity; // updated after metadata loads
 
   const vid = document.querySelector('.hero-bg-video');
   const btn = document.getElementById('heroSoundBtn');
@@ -1033,6 +1054,7 @@ document.addEventListener('visibilitychange', () => {
   }
 
   vid.addEventListener('loadedmetadata', () => {
+    VIDEO_END = vid.duration || Infinity;
     vid.currentTime = VIDEO_START;
     vid.play().catch(() => {});
   });
@@ -1043,7 +1065,7 @@ document.addEventListener('visibilitychange', () => {
     const now = Date.now();
     if (now - lastCheck < 250) return;
     lastCheck = now;
-    if (vid.currentTime >= VIDEO_END) {
+    if (VIDEO_END !== Infinity && vid.currentTime >= VIDEO_END - 0.5) {
       vid.currentTime = VIDEO_START;
     }
   }, { passive: true });

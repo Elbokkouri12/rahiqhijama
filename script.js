@@ -459,7 +459,7 @@ if (dateInput) {
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
   // Allow today if at least one slot remains (>30 min before closing)
-  const todayStillOpen = nowMinutes < (todayHours.end * 60 - 30);
+  const todayStillOpen = nowMinutes < todayHours.end * 60;
 
   const minDate = new Date(now);
   if (!todayStillOpen) minDate.setDate(now.getDate() + 1);
@@ -531,8 +531,8 @@ async function checkTimeSlots() {
       // Outside working hours for this day
       slot.classList.add('outside-hours');
       slot.disabled = true;
-    } else if (isToday && slotMinutes <= nowTotalMinutes + 30) {
-      // Today: slot already passed or less than 30 min away
+    } else if (isToday && slotMinutes <= nowTotalMinutes) {
+      // Today: slot time already passed
       slot.classList.add('outside-hours');
       slot.disabled = true;
     } else if (booked.includes(slot.dataset.time)) {
